@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart – TimeCraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --gold: #c9a84c; --dark: #111; --grey: #f7f7f7; --mid: #666; --border: #e8e8e8; }
+    body { font-family: 'Segoe UI', sans-serif; color: var(--dark); background: #fff; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon { width: 36px; height: 36px; }
+    .nav-logo-text { font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--dark); }
+    .nav-logo-text span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 13px; color: var(--mid); letter-spacing: 1px; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-nav { padding: 8px 20px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: 600; }
+    .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); background: transparent; }
+    .btn-outline:hover { background: var(--dark); color: #fff; }
+    .btn-gold-nav { background: var(--gold); color: #fff; border: 1.5px solid var(--gold); }
+    .btn-gold-nav:hover { background: #b8962e; }
+    .cart-icon-link { position: relative; font-size: 20px; text-decoration: none; color: var(--dark); }
+    .cart-count { position: absolute; top: -8px; right: -10px; background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ── PAGE ── */
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 100px 5% 80px; }
+    .page-title { font-size: 32px; font-weight: 800; margin-bottom: 6px; }
+    .page-sub { font-size: 14px; color: var(--mid); margin-bottom: 40px; }
+
+    /* ── PROGRESS STEPS (3 steps: Cart, Payment, Confirmation) ── */
+    .steps {
+      display: flex; align-items: center;
+      margin-bottom: 48px; max-width: 500px;
+    }
+    .step {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: #bbb; text-transform: uppercase;
+      letter-spacing: 1px; white-space: nowrap;
+    }
+    .step.active { color: var(--dark); }
+    .step.done { color: var(--gold); }
+    .step-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #eee; color: #bbb;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      transition: all 0.4s;
+    }
+    .step.active .step-circle { background: var(--dark); color: #fff; box-shadow: 0 0 0 4px rgba(17,17,17,0.12); }
+    .step.done .step-circle { background: var(--gold); color: #fff; box-shadow: 0 0 0 4px rgba(201,168,76,0.2); }
+    .step-line {
+      flex: 1; height: 3px; border-radius: 2px;
+      background: #eee; margin: 0 10px; margin-bottom: 20px;
+      transition: background 0.4s;
+      min-width: 60px;
+    }
+    .step-line.done { background: var(--gold); }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── CART SCREEN ── */
+    .cart-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: start; }
+    .cart-header {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px;
+      padding: 0 0 12px; border-bottom: 1px solid var(--border);
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--mid); font-weight: 700;
+    }
+    .cart-item {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px;
+      align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border); gap: 10px;
+    }
+    .item-product { display: flex; align-items: center; gap: 16px; }
+    .item-img { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; background: var(--grey); flex-shrink: 0; }
+    .item-img img { width: 100%; height: 100%; object-fit: cover; }
+    .item-brand { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+    .item-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .item-meta { font-size: 12px; color: var(--mid); }
+    .item-price { font-size: 15px; font-weight: 700; }
+    .qty-control { display: flex; align-items: center; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; width: fit-content; }
+    .qty-control button { width: 32px; height: 32px; background: var(--grey); border: none; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .qty-control button:hover { background: #e0e0e0; }
+    .qty-control span { width: 36px; text-align: center; font-size: 14px; font-weight: 700; }
+    .item-total { font-size: 15px; font-weight: 800; }
+    .btn-remove { width: 32px; height: 32px; border-radius: 6px; border: none; background: none; color: #ccc; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .btn-remove:hover { background: #ffe9e9; color: #e74c3c; }
+
+    /* Coupon */
+    .coupon-row { display: flex; gap: 10px; margin-top: 28px; }
+    .coupon-input { flex: 1; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; }
+    .coupon-input:focus { border-color: var(--gold); }
+    .btn-coupon { padding: 11px 20px; background: var(--grey); border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; }
+    .btn-coupon:hover { background: var(--dark); color: #fff; border-color: var(--dark); }
+    .coupon-msg { font-size: 12px; margin-top: 8px; display: none; }
+    .coupon-msg.success { display: block; color: #1a8a4a; }
+    .coupon-msg.error { display: block; color: #e74c3c; }
+
+    /* Continue button row */
+    .cart-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; flex-wrap: wrap; gap: 12px; }
+    .btn-continue-shop { font-size: 13px; color: var(--mid); text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .btn-continue-shop:hover { color: var(--dark); }
+
+    /* ── ORDER SUMMARY (shared) ── */
+    .order-summary { background: var(--grey); border-radius: 16px; padding: 28px; position: sticky; top: 90px; }
+    .summary-title { font-size: 16px; font-weight: 800; margin-bottom: 24px; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--mid); margin-bottom: 14px; }
+    .summary-row.total { font-size: 18px; font-weight: 800; color: var(--dark); border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; }
+    .summary-row span:last-child { font-weight: 600; color: var(--dark); }
+    .summary-row.discount span:last-child { color: #1a8a4a; }
+    .btn-checkout { width: 100%; padding: 14px; margin-top: 20px; background: var(--dark); color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-checkout:hover { background: var(--gold); }
+    .secure-badges { display: flex; justify-content: center; gap: 16px; margin-top: 18px; font-size: 12px; color: var(--mid); }
+
+    /* ── PAYMENT SCREEN ── */
+    .payment-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: start; }
+    .payment-form { background: #fff; }
+    .form-section { margin-bottom: 32px; }
+    .form-section-title { font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid.full { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 700; color: var(--mid); letter-spacing: 0.5px; text-transform: uppercase; }
+    .form-group input, .form-group select {
+      padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 14px; outline: none; background: #fafafa; color: var(--dark);
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--gold); background: #fff; }
+
+    /* Payment method tabs */
+    .payment-methods { display: flex; gap: 12px; margin-bottom: 20px; }
+    .pay-method {
+      flex: 1; padding: 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      text-align: center; cursor: pointer; font-size: 13px; font-weight: 700;
+      transition: all 0.2s; background: #fff;
+    }
+    .pay-method:hover { border-color: var(--gold); }
+    .pay-method.active { border-color: var(--gold); background: #fffdf5; color: var(--gold); }
+    .pay-method-icon { font-size: 22px; margin-bottom: 6px; }
+
+    .payment-fields { display: none; }
+    .payment-fields.active { display: block; }
+
+    .back-btn { background: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 11px 22px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--mid); transition: all 0.2s; }
+    .back-btn:hover { border-color: var(--dark); color: var(--dark); }
+    .pay-actions { display: flex; gap: 14px; align-items: center; margin-top: 28px; }
+    .btn-pay { flex: 1; padding: 14px; background: var(--dark); color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-pay:hover { background: var(--gold); }
+
+    /* ── CONFIRMATION SCREEN ── */
+
+    /* Gold particle canvas behind everything */
+    #confirm-canvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 200; display: none;
+    }
+
+    .confirmation-wrap {
+      text-align: center; padding: 60px 20px;
+      max-width: 640px; margin: 0 auto;
+      position: relative;
+    }
+
+    /* Big animated checkmark ring */
+    .confirm-check-wrap {
+      width: 110px; height: 110px; margin: 0 auto 28px;
+      position: relative;
+    }
+    .confirm-check-bg {
+      width: 110px; height: 110px; border-radius: 50%;
+      background: linear-gradient(135deg, #0d0d0d, #1a1207);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.4);
+      animation: checkPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.2s forwards;
+      position: relative; z-index: 1;
+    }
+    .confirm-check-bg::after {
+      content: '';
+      position: absolute; inset: -6px; border-radius: 50%;
+      background: conic-gradient(var(--gold) 0%, transparent 70%);
+      animation: spinRing 2s linear 0.6s infinite;
+      z-index: -1;
+    }
+    .confirm-check-bg::before {
+      content: '';
+      position: absolute; inset: -3px; border-radius: 50%;
+      background: #fff;
+      z-index: -1;
+    }
+    @keyframes checkPop {
+      to { opacity:1; transform:scale(1); }
+    }
+    @keyframes spinRing {
+      to { transform: rotate(360deg); }
+    }
+    .confirm-check-icon {
+      font-size: 46px;
+      animation: iconBounce 0.4s ease 0.7s both;
+    }
+    @keyframes iconBounce {
+      0%  { transform: scale(0) rotate(-20deg); opacity:0; }
+      60% { transform: scale(1.2) rotate(5deg);  opacity:1; }
+      100%{ transform: scale(1)   rotate(0deg);  opacity:1; }
+    }
+
+    /* Pulsing gold rings */
+    .confirm-rings {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .ring {
+      position: absolute; border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
+      opacity: 0;
+    }
+    .ring-1 { width: 140px; height: 140px; animation: ringPulse 1.8s ease-out 0.8s infinite; }
+    .ring-2 { width: 180px; height: 180px; animation: ringPulse 1.8s ease-out 1.1s infinite; }
+    .ring-3 { width: 220px; height: 220px; animation: ringPulse 1.8s ease-out 1.4s infinite; }
+    @keyframes ringPulse {
+      0%  { transform:translate(-50%,-50%) scale(0.6); opacity:0.6; }
+      100%{ transform:translate(-50%,-50%) scale(1.2); opacity:0; }
+    }
+
+    /* Gold shimmer divider */
+    .gold-divider {
+      width: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 24px auto;
+      animation: dividerGrow 0.8s ease 1s forwards;
+    }
+    @keyframes dividerGrow { to { width: 200px; } }
+
+    /* Staggered fade-in for text blocks */
+    .fade-up {
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .fade-up.d1 { animation-delay: 0.9s; }
+    .fade-up.d2 { animation-delay: 1.1s; }
+    .fade-up.d3 { animation-delay: 1.3s; }
+    .fade-up.d4 { animation-delay: 1.5s; }
+    .fade-up.d5 { animation-delay: 1.7s; }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+    .confirm-title { font-size: 34px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
+    .confirm-tagline { font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .confirm-sub { font-size: 15px; color: var(--mid); line-height: 1.8; margin-bottom: 0; }
+
+    /* Order ID badge */
+    .confirm-order-id {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #0d0d0d; color: var(--gold);
+      border-radius: 10px; padding: 12px 24px;
+      font-size: 13px; font-weight: 800; letter-spacing: 3px;
+      margin-bottom: 36px;
+      box-shadow: 0 0 0 1px rgba(201,168,76,0.3), 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Delivery timeline */
+    .delivery-timeline {
+      display: flex; justify-content: center; gap: 0;
+      margin-bottom: 36px;
+    }
+    .timeline-step {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; flex: 1; max-width: 120px;
+    }
+    .timeline-icon {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--grey); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+      transition: all 0.4s;
+    }
+    .timeline-step.lit .timeline-icon { background: #0d0d0d; border-color: var(--gold); }
+    .timeline-label { font-size: 11px; font-weight: 700; color: var(--mid); letter-spacing: 1px; text-align: center; }
+    .timeline-sub { font-size: 10px; color: #bbb; text-align: center; }
+    .timeline-connector { flex: 1; height: 2px; background: var(--border); margin-top: 22px; max-width: 40px; position: relative; overflow: hidden; }
+    .timeline-connector::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: var(--gold); transition: left 0.6s ease; }
+    .timeline-connector.lit::after { left: 0; }
+
+    /* Ordered items */
+    .confirm-items {
+      text-align: left; background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px; margin-bottom: 32px;
+    }
+    .confirm-items-title { font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--mid); margin-bottom: 16px; }
+    .confirm-item { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .confirm-item:last-child { border-bottom: none; }
+    .confirm-item img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: var(--grey); }
+    .confirm-item-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .confirm-item-meta { font-size: 12px; color: var(--mid); }
+    .confirm-item-price { margin-left: auto; font-size: 14px; font-weight: 800; color: var(--dark); }
+
+    /* Action buttons */
+    .confirm-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-home {
+      padding: 14px 30px; background: #0d0d0d; color: var(--gold);
+      text-decoration: none; border-radius: 10px; font-size: 12px;
+      font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      border: 1.5px solid var(--gold);
+      transition: all 0.2s;
+    }
+    .btn-home:hover { background: var(--gold); color: #0d0d0d; }
+    .btn-shop-more {
+      padding: 14px 30px; border: 1.5px solid var(--border);
+      color: var(--dark); text-decoration: none; border-radius: 10px;
+      font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-shop-more:hover { background: var(--dark); color: #fff; border-color: var(--dark); }
+
+    /* Empty cart */
+    .empty-cart { text-align: center; padding: 80px 20px; display: none; }
+    .empty-cart-icon { font-size: 64px; margin-bottom: 16px; }
+    .empty-cart h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .empty-cart p { font-size: 14px; color: var(--mid); margin-bottom: 28px; }
+    .btn-shop-link { display: inline-block; padding: 13px 32px; background: var(--dark); color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .btn-shop-link:hover { background: var(--gold); }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 30px; right: 30px; z-index: 999; background: var(--dark); color: #fff; padding: 14px 22px; border-radius: 10px; font-size: 13px; border-left: 4px solid var(--gold); transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 900px) {
+      .cart-layout, .payment-layout { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+      .cart-header { display: none; }
+      .cart-item { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .payment-methods { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg class="nav-logo-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <rect x="15" y="1" width="10" height="7" rx="2" fill="#222" stroke="#c9a84c" stroke-width="0.8"/>
+      <rect x="15" y="32" width="10" height="7" rx="2" fill="#222" stroke="#c9a84c" stroke-width="0.8"/>
+      <circle cx="20" cy="20" r="13" fill="#111" stroke="#c9a84c" stroke-width="1.5"/>
+      <circle cx="20" cy="20" r="10" fill="#0a0a0a" stroke="#c9a84c" stroke-width="0.5" stroke-dasharray="1.5,2"/>
+      <line x1="20" y1="12" x2="20" y2="14.5" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="25.5" x2="20" y2="28" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="12" y1="20" x2="14.5" y2="20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="25.5" y1="20" x2="28" y2="20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="20" x2="16.5" y2="15.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="20" x2="24" y2="16" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
+      <circle cx="20" cy="20" r="1.5" fill="#c9a84c"/>
+    </svg>
+    <span class="nav-logo-text">TIME<span>CRAFT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="index.html#brands">Brands</a></li>
+    <li><a href="index.html#testimonials">Reviews</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="cart.html" class="cart-icon-link">🛒<span class="cart-count" id="cart-count">0</span></a>
+    <a href="login.html" class="btn-nav btn-outline">Login</a>
+    <a href="signup.html" class="btn-nav btn-gold-nav">Sign Up</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <h1 class="page-title" id="page-title">Your Cart 🛒</h1>
+  <p class="page-sub" id="page-sub"></p>
+
+  <!-- ── PROGRESS STEPS (3 steps only) ── -->
+  <div class="steps">
+    <div class="step active" id="step-1">
+      <div class="step-circle">1</div>
+      <span>Cart</span>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step" id="step-2">
+      <div class="step-circle">2</div>
+      <span>Payment</span>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step" id="step-3">
+      <div class="step-circle">✓</div>
+      <span>Confirmation</span>
+    </div>
+  </div>
+
+  <!-- ══════════════ SCREEN 1: CART ══════════════ -->
+  <div class="screen active" id="screen-cart">
+
+    <!-- Empty state -->
+    <div class="empty-cart" id="empty-cart">
+      <div class="empty-cart-icon">🕰️</div>
+      <h2>Your cart is empty</h2>
+      <p>Looks like you haven't added any watches yet.<br/>Browse our collection and find your perfect timepiece.</p>
+      <a href="index.html" class="btn-shop-link">Shop Now</a>
+    </div>
+
+    <div id="cart-has-items">
+      <div class="cart-layout">
+        <!-- Items -->
+        <div>
+          <div class="cart-header">
+            <div>Product</div><div>Price</div><div>Quantity</div><div>Total</div><div></div>
+          </div>
+          <div id="cart-items-list"></div>
+
+          <!-- Coupon -->
+          <div class="coupon-row">
+            <input class="coupon-input" type="text" id="coupon-input" placeholder="Coupon code? Try: TIMECRAFT10"/>
+            <button class="btn-coupon" onclick="applyCoupon()">Apply</button>
+          </div>
+          <div class="coupon-msg" id="coupon-msg"></div>
+
+          <!-- Actions row -->
+          <div class="cart-actions">
+            <a href="index.html" class="btn-continue-shop">← Continue Shopping</a>
+            <button class="btn-checkout" style="width:auto;padding:13px 36px" onclick="goToStep(2)">Continue to Payment →</button>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="order-summary">
+          <div class="summary-title">Order Summary</div>
+          <div class="summary-row"><span>Subtotal (<span id="item-count">0</span> items)</span><span id="summary-subtotal">₹0</span></div>
+          <div class="summary-row"><span>Shipping</span><span style="color:#1a8a4a;font-weight:700">FREE</span></div>
+          <div class="summary-row" id="discount-row" style="display:none"><span>Discount</span><span id="summary-discount" style="color:#1a8a4a">-₹0</span></div>
+          <div class="summary-row"><span>GST (18%)</span><span id="summary-gst">₹0</span></div>
+          <div class="summary-row total"><span>Total</span><span id="summary-total">₹0</span></div>
+          <button class="btn-checkout" onclick="goToStep(2)">Continue to Payment →</button>
+          <div class="secure-badges"><span>🔒 Secure</span><span>↩️ Returns</span><span>✅ Genuine</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SCREEN 2: PAYMENT ══════════════ -->
+  <div class="screen" id="screen-payment">
+    <div class="payment-layout">
+      <!-- Form -->
+      <div class="payment-form">
+
+        <!-- Shipping Address -->
+        <div class="form-section">
+          <div class="form-section-title">📦 Shipping Address</div>
+          <div class="form-grid">
+            <div class="form-group"><label>First Name</label><input type="text" placeholder="Malatesh" id="f-fname"/></div>
+            <div class="form-group"><label>Last Name</label><input type="text" placeholder="P N" id="f-lname"/></div>
+          </div>
+          <div class="form-grid full" style="margin-top:14px">
+            <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" id="f-email"/></div>
+            <div class="form-group" style="margin-top:14px"><label>Phone</label><input type="tel" placeholder="+91 98765 43210" id="f-phone"/></div>
+            <div class="form-group" style="margin-top:14px"><label>Address</label><input type="text" placeholder="123, MG Road" id="f-address"/></div>
+          </div>
+          <div class="form-grid" style="margin-top:14px">
+            <div class="form-group"><label>City</label><input type="text" placeholder="Mysuru" id="f-city"/></div>
+            <div class="form-group"><label>PIN Code</label><input type="text" placeholder="570001" id="f-pin"/></div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="form-section">
+          <div class="form-section-title">💳 Payment Method</div>
+          <div class="payment-methods">
+            <div class="pay-method active" onclick="selectPayment('card')">
+              <div class="pay-method-icon">💳</div>Card
+            </div>
+            <div class="pay-method" onclick="selectPayment('upi')">
+              <div class="pay-method-icon">📱</div>UPI
+            </div>
+            <div class="pay-method" onclick="selectPayment('cod')">
+              <div class="pay-method-icon">💵</div>Cash on Delivery
+            </div>
+          </div>
+
+          <!-- Card fields -->
+          <div class="payment-fields active" id="fields-card">
+            <div class="form-grid full">
+              <div class="form-group"><label>Card Number</label><input type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="f-card"/></div>
+              <div class="form-group" style="margin-top:14px"><label>Cardholder Name</label><input type="text" placeholder="Name on card" id="f-cname"/></div>
+            </div>
+            <div class="form-grid" style="margin-top:14px">
+              <div class="form-group"><label>Expiry Date</label><input type="text" placeholder="MM / YY" maxlength="7" id="f-expiry"/></div>
+              <div class="form-group"><label>CVV</label><input type="password" placeholder="•••" maxlength="3" id="f-cvv"/></div>
+            </div>
+          </div>
+
+          <!-- UPI fields -->
+          <div class="payment-fields" id="fields-upi">
+            <div class="form-group"><label>UPI ID</label><input type="text" placeholder="yourname@upi" id="f-upi"/></div>
+          </div>
+
+          <!-- COD -->
+          <div class="payment-fields" id="fields-cod">
+            <p style="font-size:14px;color:var(--mid);background:var(--grey);padding:16px;border-radius:8px">
+              💵 Pay with cash when your order is delivered. Available for orders above ₹1,000.
+            </p>
+          </div>
+        </div>
+
+        <div class="pay-actions">
+          <button class="back-btn" onclick="goToStep(1)">← Back to Cart</button>
+          <button class="btn-pay" onclick="placeOrder()">Place Order & Pay →</button>
+        </div>
+      </div>
+
+      <!-- Summary (readonly) -->
+      <div class="order-summary">
+        <div class="summary-title">Order Summary</div>
+        <div id="payment-summary-items"></div>
+        <div class="summary-row"><span>Shipping</span><span style="color:#1a8a4a;font-weight:700">FREE</span></div>
+        <div class="summary-row" id="p-discount-row" style="display:none"><span>Discount</span><span id="p-summary-discount" style="color:#1a8a4a">-₹0</span></div>
+        <div class="summary-row"><span>GST (18%)</span><span id="p-summary-gst">₹0</span></div>
+        <div class="summary-row total"><span>Total</span><span id="p-summary-total">₹0</span></div>
+        <div class="secure-badges"><span>🔒 SSL Secure</span><span>✅ Verified</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SCREEN 3: CONFIRMATION ══════════════ -->
+  <div class="screen" id="screen-confirmation">
+    <!-- Gold particle canvas -->
+    <canvas id="confirm-canvas"></canvas>
+
+    <div class="confirmation-wrap">
+
+      <!-- Animated checkmark -->
+      <div class="confirm-check-wrap">
+        <div class="confirm-rings">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
+        </div>
+        <div class="confirm-check-bg">
+          <span class="confirm-check-icon">⌚</span>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="fade-up d1">
+        <div class="confirm-tagline">✦ TimeCraft Luxury ✦</div>
+        <h2 class="confirm-title">Order Confirmed!</h2>
+      </div>
+
+      <div class="gold-divider"></div>
+
+      <p class="confirm-sub fade-up d2">
+        Thank you for choosing <strong>TimeCraft</strong>.<br/>
+        Your luxury timepiece is being prepared with the utmost care<br/>and will be on its way to you shortly.
+      </p>
+
+      <!-- Order ID -->
+      <div class="fade-up d3">
+        <div class="confirm-order-id" id="confirm-order-id">
+          <span>🏷️</span> ORDER #TC-000000
+        </div>
+      </div>
+
+      <!-- Delivery timeline -->
+      <div class="delivery-timeline fade-up d4" id="delivery-timeline">
+        <div class="timeline-step lit">
+          <div class="timeline-icon">✅</div>
+          <div class="timeline-label">Confirmed</div>
+          <div class="timeline-sub">Just now</div>
+        </div>
+        <div class="timeline-connector" id="tconn-1"></div>
+        <div class="timeline-step" id="tstep-pack">
+          <div class="timeline-icon">📦</div>
+          <div class="timeline-label">Packing</div>
+          <div class="timeline-sub">1–2 hrs</div>
+        </div>
+        <div class="timeline-connector" id="tconn-2"></div>
+        <div class="timeline-step" id="tstep-ship">
+          <div class="timeline-icon">🚚</div>
+          <div class="timeline-label">Shipped</div>
+          <div class="timeline-sub">24 hrs</div>
+        </div>
+        <div class="timeline-connector" id="tconn-3"></div>
+        <div class="timeline-step" id="tstep-deliver">
+          <div class="timeline-icon">🏠</div>
+          <div class="timeline-label">Delivered</div>
+          <div class="timeline-sub">3–5 days</div>
+        </div>
+      </div>
+
+      <!-- Ordered items -->
+      <div class="confirm-items fade-up d5">
+        <div class="confirm-items-title">Items Ordered</div>
+        <div id="confirm-items-list"></div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="confirm-actions fade-up d5">
+        <a href="index.html" class="btn-home" onclick="clearCartAfterOrder()">← Back to Home</a>
+        <a href="index.html" class="btn-shop-more" onclick="clearCartAfterOrder()">Shop More Watches</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const COUPONS = { 'TIMECRAFT10': 10, 'WATCH5': 5 };
+  let discountPct = 0;
+  let currentStep = 1;
+  let selectedPayment = 'card';
+
+  function getCart() { return JSON.parse(localStorage.getItem('timecraft_cart') || '[]'); }
+  function saveCart(cart) {
+    localStorage.setItem('timecraft_cart', JSON.stringify(cart));
+    document.getElementById('cart-count').textContent = cart.reduce((s,i) => s+i.qty, 0);
+  }
+  function formatPrice(lakh) { return '₹' + Math.round(lakh * 100000).toLocaleString('en-IN'); }
+
+  // ── STEP NAVIGATION ──
+  function goToStep(step) {
+    const cart = getCart();
+    if (step === 2 && cart.length === 0) { showToast('Your cart is empty!'); return; }
+
+    currentStep = step;
+
+    // Update step indicators
+    [1,2,3].forEach(n => {
+      const el = document.getElementById(`step-${n}`);
+      el.classList.remove('active','done');
+      if (n < step) el.classList.add('done');
+      else if (n === step) el.classList.add('active');
+    });
+
+    // Update connecting lines
+    document.getElementById('line-1').classList.toggle('done', step > 1);
+    document.getElementById('line-2').classList.toggle('done', step > 2);
+
+    // Show correct screen
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screens = { 1:'screen-cart', 2:'screen-payment', 3:'screen-confirmation' };
+    document.getElementById(screens[step]).classList.add('active');
+
+    // Update title
+    const titles = { 1:'Your Cart 🛒', 2:'Payment Details 💳', 3:'Order Confirmed! 🎉' };
+    document.getElementById('page-title').textContent = titles[step];
+
+    if (step === 2) renderPaymentSummary();
+    if (step === 3) { setTimeout(launchParticles, 300); setTimeout(animateTimeline, 800); }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── RENDER CART ──
+  function renderCart() {
+    const cart = getCart();
+    const emptyEl = document.getElementById('empty-cart');
+    const hasEl = document.getElementById('cart-has-items');
+    document.getElementById('cart-count').textContent = cart.reduce((s,i) => s+i.qty, 0);
+
+    if (cart.length === 0) {
+      emptyEl.style.display = 'block'; hasEl.style.display = 'none';
+      document.getElementById('page-sub').textContent = '';
+      return;
+    }
+    emptyEl.style.display = 'none'; hasEl.style.display = 'block';
+    document.getElementById('page-sub').textContent = `You have ${cart.length} item${cart.length>1?'s':''} in your cart`;
+
+    const list = document.getElementById('cart-items-list');
+    list.innerHTML = '';
+    cart.forEach((item, index) => {
+      list.innerHTML += `
+        <div class="cart-item">
+          <div class="item-product">
+            <div class="item-img"><img src="${item.img}" onerror="this.src='images/placeholder.jpg'" alt="${item.name}"/></div>
+            <div>
+              <div class="item-brand">${item.brand}</div>
+              <div class="item-name">${item.name}</div>
+              <div class="item-meta">Variant: ${item.variant} &nbsp;|&nbsp; Size: ${item.size}</div>
+            </div>
+          </div>
+          <div class="item-price">${formatPrice(item.price)}</div>
+          <div>
+            <div class="qty-control">
+              <button onclick="changeQty(${index},-1)">−</button>
+              <span id="qty-${index}">${item.qty}</span>
+              <button onclick="changeQty(${index},1)">+</button>
+            </div>
+          </div>
+          <div class="item-total" id="itotal-${index}">${formatPrice(item.price * item.qty)}</div>
+          <button class="btn-remove" onclick="removeItem(${index})">✕</button>
+        </div>`;
+    });
+    updateSummary();
+  }
+
+  function changeQty(index, delta) {
+    const cart = getCart();
+    cart[index].qty = Math.max(1, cart[index].qty + delta);
+    saveCart(cart);
+    document.getElementById(`qty-${index}`).textContent = cart[index].qty;
+    document.getElementById(`itotal-${index}`).textContent = formatPrice(cart[index].price * cart[index].qty);
+    updateSummary();
+  }
+
+  function removeItem(index) {
+    const cart = getCart();
+    const name = cart[index].name;
+    cart.splice(index, 1);
+    saveCart(cart);
+    showToast(`"${name}" removed from cart`);
+    renderCart();
+  }
+
+  function updateSummary() {
+    const cart = getCart();
+    const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const discount = subtotal * discountPct / 100;
+    const gst = (subtotal - discount) * 0.18;
+    const total = subtotal - discount + gst;
+    document.getElementById('item-count').textContent = cart.reduce((s,i) => s+i.qty, 0);
+    document.getElementById('summary-subtotal').textContent = formatPrice(subtotal);
+    document.getElementById('summary-gst').textContent = formatPrice(gst);
+    document.getElementById('summary-total').textContent = formatPrice(total);
+    document.getElementById('discount-row').style.display = discountPct > 0 ? 'flex' : 'none';
+    if (discountPct > 0) document.getElementById('summary-discount').textContent = `-${formatPrice(discount)} (${discountPct}% off)`;
+  }
+
+  function applyCoupon() {
+    const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+    const msgEl = document.getElementById('coupon-msg');
+    if (COUPONS[code]) {
+      discountPct = COUPONS[code];
+      msgEl.className = 'coupon-msg success';
+      msgEl.textContent = `✓ Coupon "${code}" applied! ${discountPct}% off.`;
+    } else {
+      discountPct = 0;
+      msgEl.className = 'coupon-msg error';
+      msgEl.textContent = '✕ Invalid code. Try TIMECRAFT10';
+    }
+    updateSummary();
+  }
+
+  // ── PAYMENT SUMMARY ──
+  function renderPaymentSummary() {
+    const cart = getCart();
+    const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const discount = subtotal * discountPct / 100;
+    const gst = (subtotal - discount) * 0.18;
+    const total = subtotal - discount + gst;
+
+    let html = '';
+    cart.forEach(item => {
+      html += `<div class="summary-row"><span>${item.brand} ${item.name} (${item.variant}) ×${item.qty}</span><span>${formatPrice(item.price * item.qty)}</span></div>`;
+    });
+    document.getElementById('payment-summary-items').innerHTML = html;
+    document.getElementById('p-summary-gst').textContent = formatPrice(gst);
+    document.getElementById('p-summary-total').textContent = formatPrice(total);
+    document.getElementById('p-discount-row').style.display = discountPct > 0 ? 'flex' : 'none';
+    if (discountPct > 0) document.getElementById('p-summary-discount').textContent = `-${formatPrice(discount)}`;
+  }
+
+  // ── PAYMENT METHOD ──
+  function selectPayment(method) {
+    selectedPayment = method;
+    document.querySelectorAll('.pay-method').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.querySelectorAll('.payment-fields').forEach(el => el.classList.remove('active'));
+    document.getElementById(`fields-${method}`).classList.add('active');
+  }
+
+  // ── PLACE ORDER ──
+  function placeOrder() {
+    const fname = document.getElementById('f-fname').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const address = document.getElementById('f-address').value.trim();
+
+    if (!fname || !email || !address) {
+      showToast('⚠️ Please fill in your name, email and address');
+      return;
+    }
+    if (selectedPayment === 'card') {
+      const card = document.getElementById('f-card').value.trim();
+      const cvv = document.getElementById('f-cvv').value.trim();
+      if (!card || !cvv) { showToast('⚠️ Please enter your card details'); return; }
+    }
+    if (selectedPayment === 'upi') {
+      const upi = document.getElementById('f-upi').value.trim();
+      if (!upi) { showToast('⚠️ Please enter your UPI ID'); return; }
+    }
+
+    // Build confirmation
+    const orderId = 'TC-' + Math.random().toString(36).substr(2,6).toUpperCase();
+    document.getElementById('confirm-order-id').textContent = `ORDER #${orderId}`;
+
+    const cart = getCart();
+    let confirmHtml = '';
+    cart.forEach(item => {
+      confirmHtml += `
+        <div class="confirm-item">
+          <img src="${item.img}" onerror="this.src='images/placeholder.jpg'" alt="${item.name}"/>
+          <div>
+            <div class="confirm-item-name">${item.brand} ${item.name}</div>
+            <div class="confirm-item-meta">${item.variant} · Size ${item.size} · Qty ${item.qty}</div>
+          </div>
+          <div class="confirm-item-price">${formatPrice(item.price * item.qty)}</div>
+        </div>`;
+    });
+    document.getElementById('confirm-items-list').innerHTML = confirmHtml;
+
+    goToStep(3);
+  }
+
+  function clearCartAfterOrder() {
+    localStorage.removeItem('timecraft_cart');
+  }
+
+  // ── GOLD PARTICLE BURST ──
+  function launchParticles() {
+    const canvas = document.getElementById('confirm-canvas');
+    canvas.style.display = 'block';
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ['#c9a84c','#f5d57a','#fff8dc','#e8c96a','#ffffff'];
+
+    for (let i = 0; i < 90; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 12,
+        vy: (Math.random() - 0.8) * 14,
+        size: Math.random() * 5 + 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: 1,
+        gravity: 0.3,
+        shape: Math.random() > 0.5 ? 'circle' : 'rect',
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.2
+      });
+    }
+
+    let frame = 0;
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.alpha -= 0.013;
+        p.rotation += p.rotSpeed;
+        if (p.alpha <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        if (p.shape === 'circle') {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-p.size, -p.size / 2, p.size * 2, p.size);
+        }
+        ctx.restore();
+      });
+      frame++;
+      if (frame < 120) requestAnimationFrame(animate);
+      else canvas.style.display = 'none';
+    }
+    animate();
+  }
+
+  // ── DELIVERY TIMELINE ANIMATION ──
+  function animateTimeline() {
+    const steps = [
+      { step: 'tstep-pack', conn: 'tconn-1', delay: 600 },
+      { step: 'tstep-ship', conn: 'tconn-2', delay: 1100 },
+      { step: 'tstep-deliver', conn: 'tconn-3', delay: 1600 },
+    ];
+    steps.forEach(({ step, conn, delay }) => {
+      setTimeout(() => {
+        document.getElementById(conn).classList.add('lit');
+        setTimeout(() => document.getElementById(step).classList.add('lit'), 300);
+      }, delay);
+    });
+  }
+
+  function showToast(text) {
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  document.getElementById('coupon-input').addEventListener('keydown', e => { if (e.key==='Enter') applyCoupon(); });
+
+  // Format card number
+  document.addEventListener('DOMContentLoaded', () => {
+    const cardInput = document.getElementById('f-card');
+    if (cardInput) {
+      cardInput.addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g,'').substring(0,16);
+        e.target.value = v.replace(/(.{4})/g,'$1 ').trim();
+      });
+    }
+  });
+
+  renderCart();
+</script>
+</body>
+</html>

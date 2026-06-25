@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop Collections – TimeCraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #c9a84c;
+      --dark: #111111;
+      --grey: #f7f7f7;
+      --mid: #666666;
+      --border: #e8e8e8;
+    }
+
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      color: var(--dark); 
+      background: #fff; 
+      padding-top: 110px;
+    }
+
+    /* ── NAVBAR (Matched to Home/Product) ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 20px; font-weight: 700; letter-spacing: 2px;
+      color: var(--dark); text-decoration: none;
+    }
+    .nav-logo svg { width: 24px; height: 24px; fill: none; stroke: var(--gold); stroke-width: 6; }
+    .nav-logo svg circle { fill: none; }
+    .nav-logo svg line { stroke-linecap: round; stroke-width: 5; }
+
+    .nav-links { display: flex; gap: 30px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; font-size: 14px; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+
+    .nav-actions { display: flex; align-items: center; gap: 25px; }
+    .nav-actions a { text-decoration: none; color: var(--dark); font-size: 14px; font-weight: 500; }
+    .nav-cart { position: relative; cursor: pointer; text-decoration: none; color: var(--dark); }
+    .nav-cart-count {
+      position: absolute; top: -10px; right: -12px;
+      background: var(--gold); color: #fff;
+      font-size: 11px; font-weight: bold;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── SHOP CONTAINER LAYOUT ── */
+    .shop-container {
+      max-width: 1400px;
+      margin: 0 auto 60px auto;
+      padding: 0 5%;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 40px;
+    }
+
+    /* ── SIDEBAR FILTERS ── */
+    .sidebar {
+      padding-top: 10px;
+    }
+
+    .filter-section {
+      margin-bottom: 35px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-title {
+      font-size: 15px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .filter-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--mid);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .filter-label input {
+      accent-color: var(--gold);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* ── MAIN CONTENT UTILITIES & GRID ── */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .top-utilities {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      max-width: 350px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      border-color: var(--gold);
+    }
+
+    .sort-wrapper select {
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .results-count {
+      font-size: 13px;
+      color: var(--mid);
+    }
+
+    /* ── PRODUCT CARD GRID ── */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 30px;
+    }
+
+    .product-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.07);
+    }
+
+    .badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .img-container {
+      width: 100%;
+      height: 290px;
+      background: var(--grey);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-img {
+      transform: scale(1.06);
+    }
+
+    .product-info {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-grow: 1;
+    }
+
+    .product-brand {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--mid);
+      letter-spacing: 1px;
+    }
+
+    .product-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .price-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .product-price {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .product-price-old {
+      font-size: 13px;
+      color: var(--mid);
+      text-decoration: line-through;
+    }
+
+    /* ── EMPTY STATE Fallback ── */
+    .empty-state {
+      text-align: center;
+      padding: 50px 0;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .empty-state h3 { font-size: 18px; color: var(--dark); }
+    .empty-state p { color: var(--mid); font-size: 14px; }
+
+    @media (max-width: 768px) {
+      .shop-container { grid-template-columns: 1fr; gap: 20px; }
+      .sidebar { border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40"/>
+        <line x1="50" y1="50" x2="50" y2="25"/>
+        <line x1="50" y1="50" x2="70" y2="50"/>
+      </svg>
+      TIMECRAFT
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html">Login</a>
+      <a href="cart.html" class="nav-cart">
+        🛒<span class="nav-cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="shop-container">
+    
+    <aside class="sidebar">
+      <div class="filter-section">
+        <h3 class="filter-title">Brands</h3>
+        <div class="filter-options">
+          <label class="filter-label"><input type="checkbox" class="brand-filter" value="Rolex"/> Rolex</label>
+          <label class="filter-label"><input type="checkbox" class="brand-filter" value="Omega"/> Omega</label>
+          <label class="filter-label"><input type="checkbox" class="brand-filter" value="Tag Heuer"/> Tag Heuer</label>
+          <label class="filter-label"><input type="checkbox" class="brand-filter" value="Seiko"/> Seiko</label>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3 class="filter-title">Variants</h3>
+        <div class="filter-options">
+          <label class="filter-label"><input type="checkbox" class="variant-filter" value="Gold"/> Gold</label>
+          <label class="filter-label"><input type="checkbox" class="variant-filter" value="Silver"/> Silver</label>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="top-utilities">
+        <div class="search-wrapper">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search our collections..."/>
+        </div>
+        <div class="sort-wrapper">
+          <select id="sortSelect">
+            <option value="default">Default Sorting</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results-count" id="resultsCount">Showing items</div>
+
+      <div class="products-grid" id="productsGrid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <h3>No Watches Match Filters</h3>
+        <p>Try resetting some parameters or modify your query filter inputs.</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Exact structural values derived from your home & product file configurations
+const products = [
+    { id: 1, name: "Submariner Date", brand: "Rolex", variant: "Gold", price: "₹18,50,000", numPrice: 1850000, img: "images/rolex-gold.jpg", badge: "Hot" },
+    { id: 2, name: "Submariner Date", brand: "Rolex", variant: "Silver", price: "₹8,50,000", numPrice: 850000, img: "images/rolex-silver.jpg", badge: "Popular" },
+    { id: 3, name: "Seamaster 300M", brand: "Omega", variant: "Gold", price: "₹9,20,000", numPrice: 920000, img: "images/omega-gold.jpg", badge: "Exclusive" },
+    { id: 4, name: "Seamaster 300M", brand: "Omega", variant: "Silver", price: "₹4,20,000", numPrice: 420000, img: "images/omega-silver.jpg", badge: "New" },
+    { id: 5, name: "Carrera Calibre 5", brand: "Tag Heuer", variant: "Gold", price: "₹3,85,000", numPrice: 385000, img: "images/tagheuer-gold.jpg", badge: "Sale" },
+    { id: 6, name: "Carrera Calibre 5", brand: "Tag Heuer", variant: "Silver", price: "₹1,85,000", numPrice: 185000, img: "images/tagheuer-silver.jpg", badge: "" },
+    { id: 7, name: "Presage Cocktail", brand: "Seiko", variant: "Gold", price: "₹4,38,000", numPrice: 438000, img: "images/seiko-gold.jpg", badge: "" },
+    { id: 8, name: "Presage Cocktail", brand: "Seiko", variant: "Silver", price: "₹2,18,000", numPrice: 218000, img: "images/seiko-silver.jpg", badge: "Value" }
+  ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderProducts(products);
+      updateCartCount();
+
+      document.getElementById("searchInput").addEventListener("input", filterAndSort);
+      document.getElementById("sortSelect").addEventListener("change", filterAndSort);
+      document.querySelectorAll(".brand-filter, .variant-filter").forEach(cb => cb.addEventListener("change", filterAndSort));
+    });
+
+    function renderProducts(list) {
+      const grid = document.getElementById("productsGrid");
+      const emptyState = document.getElementById("emptyState");
+      const count = document.getElementById("resultsCount");
+
+      grid.innerHTML = "";
+      count.innerText = `Showing ${list.length} luxury timepieces`;
+
+      if(list.length === 0) {
+        grid.style.display = "none";
+        emptyState.style.display = "flex";
+        return;
+      }
+
+      grid.style.display = "grid";
+      emptyState.style.display = "none";
+
+      list.forEach(p => {
+        grid.innerHTML += `
+          <div class="product-card" onclick="window.location='product.html?id=${p.id}'">
+            ${p.badge ? `<div class="badge">${p.badge}</div>` : ''}
+            <div class="img-container">
+              <img src="${p.img}" alt="${p.name}" class="product-img" onerror="this.src='images/placeholder.jpg'"/>
+            </div>
+            <div class="product-info">
+              <span class="product-brand">${p.brand} (${p.variant})</span>
+              <h4 class="product-name">${p.brand} ${p.name}</h4>
+              <div class="price-container">
+                <span class="product-price">${p.price}</span>
+                ${p.oldPrice ? `<span class="product-price-old">${p.oldPrice}</span>` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filterAndSort() {
+      let filtered = [...products];
+
+      const search = document.getElementById("searchInput").value.toLowerCase().trim();
+      if(search) {
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(search) || p.brand.toLowerCase().includes(search));
+      }
+
+      const activeBrands = Array.from(document.querySelectorAll(".brand-filter:checked")).map(cb => cb.value);
+      if(activeBrands.length > 0) {
+        filtered = filtered.filter(p => activeBrands.includes(p.brand));
+      }
+
+      const activeVariants = Array.from(document.querySelectorAll(".variant-filter:checked")).map(cb => cb.value);
+      if(activeVariants.length > 0) {
+        filtered = filtered.filter(p => activeVariants.includes(p.variant));
+      }
+
+      const sortValue = document.getElementById("sortSelect").value;
+      if(sortValue === "price-low") {
+        filtered.sort((a,b) => a.numPrice - b.numPrice);
+      } else if (sortValue === "price-high") {
+        filtered.sort((a,b) => b.numPrice - a.numPrice);
+      }
+
+      renderProducts(filtered);
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('timecraft_cart') || '[]');
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').textContent = count;
+    }
+  </script>
+</body>
+</html>

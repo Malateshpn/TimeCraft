@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us – TimeCraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --gold: #c9a84c; --dark: #111111; --grey: #f7f7f7; --border: #e8e8e8; }
+    body { font-family: 'Segoe UI', sans-serif; color: var(--dark); padding-top: 110px; }
+    
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px; background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; color: var(--dark); text-decoration: none; letter-spacing: 2px; }
+    .nav-logo svg { width: 24px; height: 24px; fill: none; stroke: var(--gold); }
+    .nav-links { display: flex; gap: 30px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; font-size: 14px; }
+    .nav-links a.active { color: var(--gold); }
+
+    .contact-container { max-width: 600px; margin: 40px auto; padding: 0 5%; }
+    .contact-container h1 { font-size: 32px; font-weight: 400; margin-bottom: 10px; text-align: center; }
+    .contact-container p { color: #666; text-align: center; margin-bottom: 30px; font-size: 14px; }
+
+    form { display: flex; flex-direction: column; gap: 20px; background: var(--grey); padding: 40px; border-radius: 4px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 13px; font-weight: 600; text-transform: uppercase; color: #444; }
+    .form-group input, .form-group textarea { padding: 12px; border: 1px solid var(--border); outline: none; font-family: inherit; font-size: 14px; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--gold); }
+    
+    .btn-submit { background: var(--dark); color: #fff; border: none; padding: 15px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+    .btn-submit:hover { background: var(--gold); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="25"/><line x1="50" y1="50" x2="70" y2="50"/></svg>
+      TIMECRAFT
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+    <div></div>
+  </nav>
+
+  <div class="contact-container">
+    <h1>Connect With TimeCraft</h1>
+    <p>Have operational configuration queries or product assistance requests? Leave a message below.</p>
+    
+    <form onsubmit="event.preventDefault(); alert('Thank you! Your message was received successfully.'); this.reset();">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" required placeholder="John Doe"/>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" required placeholder="john@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea rows="5" required placeholder="How can our curation experts assist you?"></textarea>
+      </div>
+      <button type="submit" class="btn-submit">Send Message</button>
+    </form>
+  </div>
+</body>
+</html>

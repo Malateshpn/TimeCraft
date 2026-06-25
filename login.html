@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login – TimeCraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0ece4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .login-container {
+      display: flex;
+      width: 860px;
+      min-height: 520px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.18);
+    }
+
+    /* ── Left panel ── */
+    .login-left {
+      flex: 1;
+      background: linear-gradient(160deg, #0d0d0d 0%, #1a1207 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative rings behind logo */
+    .login-left::before {
+      content: '';
+      position: absolute;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .login-left::after {
+      content: '';
+      position: absolute;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.05);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .watch-logo-wrap { position: relative; z-index: 1; margin-bottom: 24px; }
+
+    .brand-est {
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: #c9a84c;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      position: relative; z-index: 1;
+    }
+
+    .brand-name {
+      font-size: 30px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      position: relative; z-index: 1;
+    }
+
+    .brand-divider {
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      margin: 14px auto;
+      position: relative; z-index: 1;
+    }
+
+    .brand-tagline {
+      font-size: 10px;
+      color: #7a6a4a;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      position: relative; z-index: 1;
+    }
+
+    /* ── Right panel ── */
+    .login-right {
+      flex: 1.3;
+      background: #ffffff;
+      padding: 3rem 2.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 4px;
+    }
+
+    .form-subtitle {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 2rem;
+    }
+
+    .message {
+      display: none;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .message.error   { display: block; background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6; }
+    .message.success { display: block; background: #f0fff5; color: #1a8a4a; border: 1px solid #b7e4c7; }
+
+    .field-group { margin-bottom: 1.1rem; }
+
+    .field-group label {
+      display: block;
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 7px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .field-group input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 14px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 10px;
+      background: #fafafa;
+      color: #111;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field-group input:focus {
+      border-color: #c9a84c;
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+      background: #fff;
+    }
+
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 12px;
+      color: #c9a84c;
+      text-decoration: none;
+      margin-top: 7px;
+      cursor: pointer;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      margin-top: 1.3rem;
+      background: #0d0d0d;
+      color: #c9a84c;
+      border: 1.5px solid #c9a84c;
+      border-radius: 10px;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-login:hover { background: #c9a84c; color: #0d0d0d; }
+    .btn-login:active { transform: scale(0.98); }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 1.4rem 0;
+    }
+    .divider hr { flex: 1; border: none; border-top: 1px solid #eee; }
+    .divider span { font-size: 11px; color: #bbb; letter-spacing: 1px; }
+
+    /* Container alignment for the official Google button wrapper */
+    .google-btn-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      min-height: 44px; /* Matches Google large button dimension */
+    }
+
+    .signup-row {
+      text-align: center;
+      margin-top: 1.4rem;
+      font-size: 13px;
+      color: #999;
+    }
+    .signup-row a {
+      color: #c9a84c;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .signup-row a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .login-container { flex-direction: column; width: 95%; }
+      .login-left { padding: 2.5rem 1.5rem; min-height: 240px; }
+    }
+  </style>
+  <!-- Load the Official Google Identity API SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<div class="login-container">
+
+  <!-- ── Left: Brand panel ── -->
+  <div class="login-left">
+    <div class="watch-logo-wrap">
+      <svg width="110" height="110" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+        <rect x="42" y="2" width="26" height="18" rx="4" fill="#2a2010" stroke="#c9a84c" stroke-width="1"/>
+        <line x1="46" y1="8" x2="64" y2="8" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+        <line x1="46" y1="12" x2="64" y2="12" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+        <line x1="46" y1="16" x2="64" y2="16" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+        <rect x="42" y="90" width="26" height="18" rx="4" fill="#2a2010" stroke="#c9a84c" stroke-width="1"/>
+        <line x1="46" y1="94" x2="64" y2="94" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+        <line x1="46" y1="98" x2="64" y2="98" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+        <line x1="46" y1="102" x2="64" y2="102" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+        <circle cx="55" cy="55" r="34" fill="#1a1207" stroke="#c9a84c" stroke-width="2"/>
+        <circle cx="55" cy="55" r="29" fill="#0d0d0d" stroke="#c9a84c" stroke-width="0.8" stroke-dasharray="2,3"/>
+        <circle cx="55" cy="55" r="25" fill="#0a0a0a"/>
+        <rect x="89" y="52" width="6" height="6" rx="2" fill="#c9a84c"/>
+        <line x1="55" y1="32" x2="55" y2="36" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+        <line x1="78" y1="55" x2="74" y2="55" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+        <line x1="55" y1="78" x2="55" y2="74" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+        <line x1="32" y1="55" x2="36" y2="55" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+        <line x1="67.5" y1="34.8" x2="66" y2="37.6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="75.2" y1="42.5" x2="72.4" y2="44" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="75.2" y1="67.5" x2="72.4" y2="66" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="67.5" y1="75.2" x2="66" y2="72.4" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="42.5" y1="34.8" x2="44" y2="37.6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="34.8" y1="42.5" x2="37.6" y2="44" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="34.8" y1="67.5" x2="37.6" y2="66" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="42.5" y1="75.2" x2="44" y2="72.4" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <line x1="55" y1="55" x2="45" y2="42" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="55" y1="55" x2="65" y2="38" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="55" y1="55" x2="60" y2="72" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="55" cy="55" r="2.5" fill="#c9a84c"/>
+        <circle cx="55" cy="55" r="1" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="brand-est">Est. 2025</div>
+    <div class="brand-name">TimeCraft</div>
+    <div class="brand-divider"></div>
+    <div class="brand-tagline">Precision &amp; Elegance</div>
+  </div>
+
+  <!-- ── Right: Form panel ── -->
+  <div class="login-right">
+    <h1 class="form-title">WELCOME BACK</h1>
+    <p class="form-subtitle">Sign in to your TimeCraft account</p>
+
+    <div id="message" class="message"></div>
+
+    <div class="field-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="email"/>
+    </div>
+
+    <div class="field-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password"/>
+      <a class="forgot-link" href="forgot-password.html">Forgot password?</a>
+    </div>
+
+    <button class="btn-login" onclick="handleLogin()">Sign In to TimeCraft</button>
+
+    <div class="divider">
+      <hr /><span>OR</span><hr />
+    </div>
+
+    <!-- METHOD 2 TARGET: The placeholder target where Google dynamically injects the official iframe button -->
+    <div id="googleButtonTarget" class="google-btn-container"></div>
+
+    <div class="signup-row">
+      New to TimeCraft? <a href="signup.html">Create an account</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function handleLogin() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!email) { showMessage('error', 'Please enter your email address.'); return; }
+    if (!validateEmail(email)) { showMessage('error', 'Please enter a valid email address.'); return; }
+    if (!password) { showMessage('error', 'Please enter your password.'); return; }
+    if (password.length < 6) { showMessage('error', 'Password must be at least 6 characters.'); return; }
+
+    showMessage('success', '✓ Login successful! Redirecting to TimeCraft...');
+    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+  }
+
+  function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+  function showMessage(type, text) {
+    const msg = document.getElementById('message');
+    msg.className = 'message ' + type;
+    msg.textContent = text;
+  }
+
+  /* ── GOOGLE IDENTITY SERVICES OAUTH HANDLER ── */
+  function handleCredentialResponse(response) {
+    try {
+      // Safely extract client-side payload from the encrypted JWT wrapper
+      const base64Url = response.credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      const userProfile = JSON.parse(jsonPayload);
+
+      showMessage('success', `✓ Access Granted! Welcome back, ${userProfile.name}.`);
+      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+
+    } catch (e) {
+      console.error("Token payload parsing failure: ", e);
+      showMessage('error', 'Authentication failed parsing token wrapper.');
+    }
+  }
+
+  window.onload = function () {
+    // 1. Initialize session using your generated key
+    google.accounts.id.initialize({
+      client_id: "455793803462-sqn5nuq7j9s0p75jn2j50k7plomdhjqd.apps.googleusercontent.com",
+      callback: handleCredentialResponse
+    });
+
+    // 2. Render Google's official strictly-branded button component into the target div
+    google.accounts.id.renderButton(
+      document.getElementById("googleButtonTarget"),
+      { 
+        theme: "outline",     // Clean background with a subtle gray border
+        size: "large",        // Comfortable height layout matching form inputs
+        width: "350",         // Custom element width matching your primary Sign-In layout box
+        text: "continue_with" // Display text reading "Continue with Google"
+      }
+    );
+
+    // 3. Enables the modern, elegant top-right floating "One-Tap" account chooser overlay
+    google.accounts.id.prompt();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+</script>
+
+</body>
+</html>

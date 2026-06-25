@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Your Account – TimeCraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #c9a84c;
+      --dark: #111111;
+      --grey: #f7f7f7;
+      --mid: #666666;
+      --border: #e8e8e8;
+    }
+
+    body { 
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+      color: var(--dark); 
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon { width: 36px; height: 36px; }
+    .nav-logo-text { font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--dark); }
+    .nav-logo-text span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 13px; color: var(--mid); letter-spacing: 1px; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-nav { padding: 8px 20px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: 600; }
+    .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); background: transparent; }
+    .btn-outline:hover { background: var(--dark); color: #fff; }
+    .btn-gold { background: var(--gold); color: #fff; border: 1.5px solid var(--gold); }
+    .btn-gold:hover { background: #b8962e; }
+
+    /* ── SIGNUP HERO CONTAINER ── */
+    .signup-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 70px;
+      padding: 40px 5%;
+      background: linear-gradient(135deg, #ffffff 60%, #fffdf5 100%);
+    }
+
+    .signup-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .signup-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    
+    .collection-tag {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 8px;
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .signup-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.5px;
+    }
+
+    .signup-header p {
+      font-size: 14px;
+      color: var(--mid);
+      margin-top: 6px;
+    }
+
+    /* ── FORM FIELDS ── */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 14px 16px; font-size: 14px; border: 1.5px solid var(--border); border-radius: 8px; color: var(--dark); outline: none; transition: all 0.2s ease; }
+    .form-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* ── CHECKBOX ── */
+    .checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin: 24px 0; }
+    .checkbox-group input { margin-top: 3px; accent-color: var(--gold); cursor: pointer; }
+    .checkbox-label { font-size: 13px; color: var(--mid); line-height: 1.5; }
+    .checkbox-label button { background: none; border: none; color: var(--dark); font-weight: 600; text-decoration: underline; cursor: pointer; font-family: inherit; font-size: inherit; padding: 0; }
+    .checkbox-label button:hover { color: var(--gold); }
+
+    /* ── BUTTONS ── */
+    .btn-submit { width: 100%; padding: 15px; background: var(--dark); color: #ffffff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s ease; }
+    .btn-submit:hover { background: var(--gold); }
+    .login-prompt { text-align: center; margin-top: 28px; font-size: 14px; color: var(--mid); }
+    .login-prompt a { color: var(--gold); text-decoration: none; font-weight: 700; }
+    .login-prompt a:hover { text-decoration: underline; }
+
+    /* ── MODAL WINDOWS (Terms & Policy) ── */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .modal-box {
+      background: #ffffff;
+      width: 90%; max-width: 550px;
+      max-height: 70vh;
+      border-radius: 14px;
+      border-top: 4px solid var(--gold);
+      padding: 30px;
+      display: flex; flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal-box { transform: translateY(0); }
+    
+    .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 14px; color: var(--dark); }
+    
+    .modal-body {
+      overflow-y: auto;
+      padding-right: 10px;
+      font-size: 14px; color: var(--mid); line-height: 1.6;
+      flex: 1;
+    }
+    .modal-body h3 { font-size: 14px; color: var(--dark); margin: 16px 0 6px; text-transform: uppercase; letter-spacing: 1px; }
+    .modal-body p { margin-bottom: 12px; }
+    
+    .modal-close-btn {
+      margin-top: 20px;
+      align-self: flex-end;
+      padding: 10px 24px;
+      background: var(--dark); color: #fff;
+      border: none; border-radius: 6px;
+      font-size: 12px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer;
+    }
+    .modal-close-btn:hover { background: var(--gold); }
+
+    /* Custom scrollbar for modal body */
+    .modal-body::-webkit-scrollbar { width: 6px; }
+    .modal-body::-webkit-scrollbar-track { background: var(--grey); }
+    .modal-body::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .signup-card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg class="nav-logo-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <rect x="15" y="1" width="10" height="7" rx="2" fill="#222" stroke="#c9a84c" stroke-width="0.8"/>
+      <rect x="15" y="32" width="10" height="7" rx="2" fill="#222" stroke="#c9a84c" stroke-width="0.8"/>
+      <circle cx="20" cy="20" r="13" fill="#111" stroke="#c9a84c" stroke-width="1.5"/>
+      <circle cx="20" cy="20" r="10" fill="#0a0a0a" stroke="#c9a84c" stroke-width="0.5" stroke-dasharray="1.5,2"/>
+      <line x1="20" y1="12" x2="20" y2="14.5" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="25.5" x2="20" y2="28" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="12" y1="20" x2="14.5" y2="20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="25.5" y1="20" x2="28" y2="20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="20" x2="16.5" y2="15.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="20" x2="24" y2="16" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
+      <circle cx="20" cy="20" r="1.5" fill="#c9a84c"/>
+    </svg>
+    <span class="nav-logo-text">TIME<span>CRAFT</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="index.html#brands">Brands</a></li>
+    <li><a href="index.html#testimonials">Reviews</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-nav btn-outline">Login</a>
+    <a href="signup.html" class="btn-nav btn-gold">Sign Up</a>
+  </div>
+</nav>
+
+<!-- ── SIGNUP FORM AREA ── -->
+<div class="signup-container">
+  <div class="signup-card">
+    <div class="signup-header">
+      <span class="collection-tag">Join The Club</span>
+      <h1>Create Account</h1>
+      <p>Unlock exclusive collections and priority shipping.</p>
+    </div>
+
+    <form id="signupForm" onsubmit="handleSignup(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="firstName">First Name</label>
+          <input class="form-input" type="text" id="firstName" required placeholder="John"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="lastName">Last Name</label>
+          <input class="form-input" type="text" id="lastName" required placeholder="Doe"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input class="form-input" type="email" id="email" required placeholder="john@example.com"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-input" type="password" id="password" required placeholder="••••••••" minlength="8"/>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms" required/>
+        <label class="checkbox-label" for="terms">
+          I agree to the <button type="button" onclick="toggleModal('termsModal', true)">Terms of Service</button> and <button type="button" onclick="toggleModal('privacyModal', true)">Privacy Policy</button>.
+        </label>
+      </div>
+
+      <button type="submit" class="btn-submit">Register</button>
+    </form>
+
+    <div class="login-prompt">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── TERMS OF SERVICE MODAL ── -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal-box">
+    <div class="modal-title">Terms of Service</div>
+    <div class="modal-body">
+      <p>Welcome to TimeCraft. By registering an account and using our store ecosystem, you agree to comply with the following regulations:</p>
+      
+      <h3>1. Authenticity & Product Integrity</h3>
+      <p>TimeCraft guarantees the authentic horological curation of all luxury timepieces listed. Product specifications, including materials (such as 18k gold, stainless steel) and power reserves, are highly accurate accurate representation of production models.</p>
+      
+      <h3>2. Payment & Purchase Authorization</h3>
+      <p>By placing an order, you confirm that all financial data provided is valid. Orders are checked against strict fraud protocols, and we reserve the right to flag or reverse high-value transactions pending dynamic authentication.</p>
+      
+      <h3>3. Shipping, Insurance, & Delivery</h3>
+      <p>Due to the high valuation of luxury timepieces, all packages are shipped via insured premium carriers. Risk of damage or transit loss passes to the client upon recorded hand-delivered signature validation.</p>
+    </div>
+    <button class="modal-close-btn" onclick="toggleModal('termsModal', false)">Accept & Close</button>
+  </div>
+</div>
+
+<!-- ── PRIVACY POLICY MODAL ── -->
+<div class="modal-overlay" id="privacyModal">
+  <div class="modal-box">
+    <div class="modal-title">Privacy Policy</div>
+    <div class="modal-body">
+      <p>At TimeCraft, safeguarding your private profile identity and transactional details remains a premier priority.</p>
+      
+      <h3>1. Information We Collect</h3>
+      <p>We process your profile metadata (Name, email, contact points) alongside watch layout custom configuration attributes (such as dial sizes or optional replacement strap materials chosen).</p>
+      
+      <h3>2. Bank & Gateway Encryption Data</h3>
+      <p>Financial asset transmission routes exclusively pass via strict banking APIs utilizing standard cryptographic tokens. TimeCraft servers do not directly cache full credit credentials or internal pin configurations.</p>
+      
+      <h3>3. Warranty Tracking & Updates</h3>
+      <p>Your user log is preserved to easily track manufacturer service claims, multi-year internal hardware movement coverages, and to provide exclusive waitlist allocation invites for limited-edition watch releases.</p>
+    </div>
+    <button class="modal-close-btn" onclick="toggleModal('privacyModal', false)">I Understand</button>
+  </div>
+</div>
+
+<script>
+  function handleSignup(e) {
+    e.preventDefault();
+    const firstName = document.getElementById('firstName').value;
+    alert(`Welcome to TimeCraft, ${firstName}! Your account setup is complete.`);
+    window.location.href = 'index.html';
+  }
+
+  // ── Modal Toggle Handler ──
+  function toggleModal(modalId, isOpen) {
+    const targetModal = document.getElementById(modalId);
+    if(isOpen) {
+      targetModal.classList.add('active');
+    } else {
+      targetModal.classList.remove('active');
+    }
+  }
+
+  // Close modals clicking outside the structural box
+  window.onclick = function(event) {
+    if (event.target.classList.contains('modal-overlay')) {
+      event.target.classList.remove('active');
+    }
+  }
+</script>
+
+</body>
+</html>

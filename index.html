@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TimeCraft – Precision & Elegance</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #c9a84c;
+      --dark: #111111;
+      --grey: #f7f7f7;
+      --mid: #666666;
+      --border: #e8e8e8;
+    }
+
+    body { font-family: 'Segoe UI', sans-serif; color: var(--dark); background: #fff; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-icon { width: 36px; height: 36px; }
+    .nav-logo-text { font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--dark); }
+    .nav-logo-text span { color: var(--gold); }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 13px; color: var(--mid); letter-spacing: 1px; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-nav {
+      padding: 8px 20px; font-size: 12px; letter-spacing: 1.5px;
+      text-transform: uppercase; border-radius: 6px; cursor: pointer;
+      text-decoration: none; font-weight: 600;
+    }
+    .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); background: transparent; }
+    .btn-outline:hover { background: var(--dark); color: #fff; }
+    .btn-gold { background: var(--gold); color: #fff; border: 1.5px solid var(--gold); }
+    .btn-gold:hover { background: #b8962e; }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 70px;
+      min-height: 92vh;
+      display: flex; align-items: center;
+      padding: 0 5%;
+      background: linear-gradient(135deg, #fff 55%, #f7f4ee 100%);
+      position: relative; overflow: hidden;
+    }
+
+    .hero-bg-circle {
+      position: absolute; right: 5%; top: 50%;
+      transform: translateY(-50%);
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, #f7f0de 0%, transparent 70%);
+      z-index: 0;
+    }
+
+    .hero-content { max-width: 560px; position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-block;
+      font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--gold);
+      padding: 5px 14px; border-radius: 20px; margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: 58px; font-weight: 800; line-height: 1.1;
+      color: var(--dark); margin-bottom: 20px;
+    }
+    .hero-title span { color: var(--gold); }
+    .hero-subtitle {
+      font-size: 16px; color: var(--mid); line-height: 1.7;
+      margin-bottom: 36px; max-width: 440px;
+    }
+    .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      padding: 14px 32px; background: var(--dark); color: #fff;
+      border: none; border-radius: 8px; font-size: 13px;
+      letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #333; }
+    .btn-secondary {
+      padding: 14px 32px; background: transparent; color: var(--dark);
+      border: 1.5px solid var(--dark); border-radius: 8px; font-size: 13px;
+      letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--dark); color: #fff; }
+
+    .hero-stats {
+      display: flex; gap: 2.5rem; margin-top: 50px;
+      padding-top: 30px; border-top: 1px solid var(--border);
+    }
+    .hero-stat-num { font-size: 28px; font-weight: 800; color: var(--dark); }
+    .hero-stat-label { font-size: 11px; color: var(--mid); letter-spacing: 1px; margin-top: 2px; }
+
+    .hero-watch {
+      position: absolute; right: 8%; top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    /* ── SECTION COMMONS ── */
+    section { padding: 90px 5%; }
+    .section-label {
+      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 36px; font-weight: 800; color: var(--dark); margin-bottom: 12px;
+    }
+    .section-sub { font-size: 15px; color: var(--mid); max-width: 500px; line-height: 1.7; }
+
+    /* ── FEATURED WATCHES ── */
+    .featured { background: #fff; }
+    .featured-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; flex-wrap: wrap; gap: 16px; }
+    .view-all { font-size: 13px; color: var(--gold); text-decoration: none; letter-spacing: 1px; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 28px;
+    }
+
+    .product-card {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform 0.25s, box-shadow 0.25s;
+      background: #fff; cursor: pointer;
+    }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+
+    .product-img {
+      background: var(--grey);
+      height: 240px; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .product-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .product-card:hover .product-img img { transform: scale(1.08); }
+    .product-badge {
+      position: absolute; top: 12px; left: 12px;
+      font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 20px; font-weight: 700;
+    }
+    .product-variant {
+      position: absolute; bottom: 12px; right: 12px;
+      font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 20px; font-weight: 700;
+      background: rgba(255,255,255,0.92); color: var(--dark);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .variant-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .dot-gold { background: linear-gradient(135deg, #f5d57a, #b8860b); }
+    .dot-silver { background: linear-gradient(135deg, #f0f0f0, #aaa); }
+
+    .product-info { padding: 18px 20px 20px; }
+    .product-brand { font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
+    .product-name { font-size: 16px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .product-desc { font-size: 12px; color: var(--mid); margin-bottom: 14px; line-height: 1.5; }
+    .product-footer { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { font-size: 18px; font-weight: 800; color: var(--dark); }
+    .product-price-old { font-size: 13px; color: #bbb; text-decoration: line-through; margin-left: 6px; }
+    .btn-cart {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--dark); border: none; color: #fff;
+      font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .btn-cart:hover { background: var(--gold); }
+
+    /* ── BRANDS ── */
+    .brands { background: var(--grey); text-align: center; padding: 70px 5%; }
+    .brands-title { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--mid); margin-bottom: 40px; }
+    .brands-grid {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+    }
+    .brand-chip {
+      padding: 14px 28px; border-radius: 40px;
+      border: 1.5px solid var(--border); background: #fff;
+      font-size: 14px; font-weight: 700; letter-spacing: 2px;
+      color: var(--mid); cursor: pointer; transition: all 0.2s;
+    }
+    .brand-chip:hover { border-color: var(--gold); color: var(--gold); background: #fffdf5; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: #fff; }
+    .testimonials-header { text-align: center; margin-bottom: 50px; }
+    .testimonials-header .section-sub { margin: 0 auto; }
+
+    .reviews-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
+    }
+    .review-card {
+      padding: 28px; border-radius: 14px;
+      border: 1px solid var(--border); background: #fff;
+      transition: box-shadow 0.2s;
+    }
+    .review-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.07); }
+    .review-stars { color: var(--gold); font-size: 16px; margin-bottom: 14px; letter-spacing: 2px; }
+    .review-text { font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .review-author { display: flex; align-items: center; gap: 12px; }
+    .review-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #8a6820);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 16px; font-weight: 700;
+    }
+    .review-name { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .review-location { font-size: 11px; color: #bbb; letter-spacing: 1px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); color: #aaa;
+      padding: 60px 5% 30px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 50px;
+    }
+    .footer-brand-name { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: 3px; margin-bottom: 12px; }
+    .footer-brand-name span { color: var(--gold); }
+    .footer-desc { font-size: 13px; line-height: 1.8; color: #888; max-width: 260px; }
+    .footer-col-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #fff; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 13px; color: #888; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid #222; padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: #555; flex-wrap: wrap; gap: 10px;
+    }
+
+    /* ── CART TOAST ── */
+    .toast {
+      position: fixed; bottom: 30px; right: 30px; z-index: 999;
+      background: var(--dark); color: #fff;
+      padding: 14px 22px; border-radius: 10px;
+      font-size: 13px; display: flex; align-items: center; gap: 10px;
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s;
+      border-left: 4px solid var(--gold);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 38px; }
+      .hero-watch { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg class="nav-logo-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <rect x="15" y="1" width="10" height="7" rx="2" fill="#222" stroke="#c9a84c" stroke-width="0.8"/>
+      <rect x="15" y="32" width="10" height="7" rx="2" fill="#222" stroke="#c9a84c" stroke-width="0.8"/>
+      <circle cx="20" cy="20" r="13" fill="#111" stroke="#c9a84c" stroke-width="1.5"/>
+      <circle cx="20" cy="20" r="10" fill="#0a0a0a" stroke="#c9a84c" stroke-width="0.5" stroke-dasharray="1.5,2"/>
+      <line x1="20" y1="12" x2="20" y2="14.5" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="25.5" x2="20" y2="28" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="12" y1="20" x2="14.5" y2="20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="25.5" y1="20" x2="28" y2="20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="20" x2="16.5" y2="15.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="20" y1="20" x2="24" y2="16" stroke="#fff" stroke-width="1" stroke-linecap="round"/>
+      <circle cx="20" cy="20" r="1.5" fill="#c9a84c"/>
+    </svg>
+    <span class="nav-logo-text">TIME<span>CRAFT</span></span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="#brands">Brands</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="login.html" class="btn-nav btn-outline">Login</a>
+    <a href="signup.html" class="btn-nav btn-gold">Sign Up</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg-circle"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">✦ New Collection 2025</div>
+    <h1 class="hero-title">Time Is Your<br/><span>Greatest</span><br/>Luxury</h1>
+    <p class="hero-subtitle">Discover handcrafted timepieces that blend Swiss precision with timeless elegance. Every second deserves to be worn beautifully.</p>
+    <div class="hero-buttons">
+      <a href="shop.html" class="btn-primary">Shop Now</a>
+      <a href="#featured" class="btn-secondary">View Collection</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">500+</div>
+        <div class="hero-stat-label">Timepieces</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">12K+</div>
+        <div class="hero-stat-label">Happy Customers</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">15+</div>
+        <div class="hero-stat-label">Luxury Brands</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero watch illustration -->
+  <div class="hero-watch">
+    <svg width="320" height="420" viewBox="0 0 320 420" xmlns="http://www.w3.org/2000/svg">
+      <!-- Strap top -->
+      <rect x="118" y="10" width="84" height="90" rx="14" fill="#1a1207" stroke="#c9a84c" stroke-width="1.5"/>
+      <line x1="130" y1="28" x2="190" y2="28" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="42" x2="190" y2="42" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="56" x2="190" y2="56" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="70" x2="190" y2="70" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="84" x2="190" y2="84" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <!-- Buckle holes -->
+      <circle cx="150" cy="48" r="3" fill="#0d0d0d"/>
+      <circle cx="162" cy="48" r="3" fill="#0d0d0d"/>
+      <circle cx="174" cy="48" r="3" fill="#0d0d0d"/>
+
+      <!-- Strap bottom -->
+      <rect x="118" y="320" width="84" height="90" rx="14" fill="#1a1207" stroke="#c9a84c" stroke-width="1.5"/>
+      <line x1="130" y1="336" x2="190" y2="336" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="350" x2="190" y2="350" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="364" x2="190" y2="364" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="378" x2="190" y2="378" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+      <line x1="130" y1="392" x2="190" y2="392" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+
+      <!-- Watch shadow -->
+      <ellipse cx="160" cy="390" rx="70" ry="12" fill="rgba(0,0,0,0.08)"/>
+
+      <!-- Watch case outer -->
+      <circle cx="160" cy="210" r="118" fill="#f0ece4"/>
+      <circle cx="160" cy="210" r="112" fill="#1a1207" stroke="#c9a84c" stroke-width="3"/>
+      <!-- Bezel -->
+      <circle cx="160" cy="210" r="100" fill="#0d0d0d" stroke="#c9a84c" stroke-width="1" stroke-dasharray="3,4"/>
+      <!-- Face -->
+      <circle cx="160" cy="210" r="90" fill="#0a0a0a"/>
+      <!-- Crown -->
+      <rect x="270" y="205" width="18" height="12" rx="4" fill="#c9a84c"/>
+
+      <!-- Hour markers -->
+      <line x1="160" y1="124" x2="160" y2="136" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/>
+      <line x1="246" y1="210" x2="234" y2="210" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/>
+      <line x1="160" y1="296" x2="160" y2="284" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/>
+      <line x1="74"  y1="210" x2="86"  y2="210" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/>
+
+      <!-- Minor hour markers -->
+      <line x1="203" y1="132" x2="197" y2="143" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="238" y1="167" x2="227" y2="173" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="238" y1="253" x2="227" y2="247" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="203" y1="288" x2="197" y2="277" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="117" y1="132" x2="123" y2="143" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="82"  y1="167" x2="93"  y2="173" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="82"  y1="253" x2="93"  y2="247" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="117" y1="288" x2="123" y2="277" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+
+      <!-- Sub-dial (date window) -->
+      <rect x="174" y="204" width="24" height="14" rx="3" fill="#111" stroke="#c9a84c" stroke-width="0.8"/>
+      <text x="186" y="215" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Segoe UI" font-weight="700">11</text>
+
+      <!-- Brand text on dial -->
+      <text x="160" y="178" text-anchor="middle" fill="#c9a84c" font-size="11" font-family="Segoe UI" letter-spacing="4" font-weight="700">TIMECRAFT</text>
+      <text x="160" y="192" text-anchor="middle" fill="#555" font-size="7.5" font-family="Segoe UI" letter-spacing="2">AUTOMATIC</text>
+
+      <!-- Hour hand -->
+      <line x1="160" y1="210" x2="134" y2="155" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+      <!-- Minute hand -->
+      <line x1="160" y1="210" x2="196" y2="142" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- Second hand -->
+      <line x1="160" y1="210" x2="172" y2="268" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="160" y1="210" x2="152" y2="186" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+
+      <!-- Center cap -->
+      <circle cx="160" cy="210" r="7" fill="#c9a84c"/>
+      <circle cx="160" cy="210" r="3.5" fill="#fff"/>
+
+      <!-- Shine overlay -->
+      <ellipse cx="130" cy="175" rx="28" ry="18" fill="rgba(255,255,255,0.04)" transform="rotate(-30 130 175)"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── FEATURED WATCHES ── -->
+<section class="featured" id="featured">
+  <div class="featured-header">
+    <div>
+      <div class="section-label">✦ Our Collection</div>
+      <h2 class="section-title">Featured Timepieces</h2>
+      <p class="section-sub">Handpicked luxury watches for the discerning collector.</p>
+    </div>
+    <a href="shop.html" class="view-all">View All →</a>
+  </div>
+
+  <div class="products-grid" id="products-grid"></div>
+</section>
+
+<!-- ── BRANDS ── -->
+<section class="brands" id="brands">
+  <div class="brands-title">Trusted Luxury Brands We Carry</div>
+  <div class="brands-grid">
+    <div class="brand-chip">ROLEX</div>
+    <div class="brand-chip">OMEGA</div>
+    <div class="brand-chip">TAG HEUER</div>
+    <div class="brand-chip">SEIKO</div>
+    <div class="brand-chip">CASIO G-SHOCK</div>
+    <div class="brand-chip">FOSSIL</div>
+    <div class="brand-chip">TISSOT</div>
+    <div class="brand-chip">CITIZEN</div>
+    <div class="brand-chip">LONGINES</div>
+    <div class="brand-chip">IWC</div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testimonials" id="testimonials">
+  <div class="testimonials-header">
+    <div class="section-label" style="text-align:center">✦ Customer Reviews</div>
+    <h2 class="section-title">What Our Customers Say</h2>
+    <p class="section-sub">Real reviews from watch lovers across India and beyond.</p>
+  </div>
+  <div class="reviews-grid" id="reviews-grid"></div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">TIME<span>CRAFT</span></div>
+      <p class="footer-desc">Your destination for luxury and precision timepieces. We bring world-class watches to your wrist.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a href="shop.html">All Watches</a></li>
+        <li><a href="#">Collection</a></li>
+        <!-- <li><a href="#">Women's Collection</a></li> -->
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping Policy</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Track Order</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 TimeCraft. All rights reserved.</span>
+    <span>Made with ♥ for college project</span>
+  </div>
+</footer>
+
+<!-- ── CART TOAST ── -->
+<div class="toast" id="toast">🛒 Added to cart!</div>
+
+<script>
+  // ── Product data (8 watches: 4 models x Gold/Silver) ──
+  const products = [
+    { id:1, brand:"Rolex", name:"Submariner Date", variant:"Gold", desc:"Iconic diver's watch with 18k gold case", price:"₹18,50,000", badge:"hot", badgeLabel:"Hot",
+      img:"images/rolex-gold.jpg" },
+    { id:2, brand:"Rolex", name:"Submariner Date", variant:"Silver", desc:"Iconic diver's watch with steel rotating bezel", price:"₹8,50,000", badge:"hot", badgeLabel:"Hot",
+      img:"images/rolex-silver.jpg" },
+    { id:3, brand:"Omega", name:"Seamaster 300M", variant:"Gold", desc:"Professional diver in 18k gold, 300m water resistant", price:"₹9,20,000", badge:"sale", badgeLabel:"Sale", oldPrice:"₹10,50,000",
+      img:"images/omega-gold.jpg" },
+    { id:4, brand:"Omega", name:"Seamaster 300M", variant:"Silver", desc:"Professional diver certified to 300 metres", price:"₹4,20,000", badge:"sale", badgeLabel:"Sale", oldPrice:"₹4,80,000",
+      img:"images/omega-silver.jpg" },
+    { id:5, brand:"Tag Heuer", name:"Carrera Calibre 5", variant:"Gold", desc:"Legendary motorsport-inspired gold timepiece", price:"₹3,85,000", badge:"new", badgeLabel:"New",
+      img:"images/tagheuer-gold.jpg" },
+    { id:6, brand:"Tag Heuer", name:"Carrera Calibre 5", variant:"Silver", desc:"Legendary motorsport-inspired steel timepiece", price:"₹1,85,000", badge:"new", badgeLabel:"New",
+      img:"images/tagheuer-silver.jpg" },
+    { id:7, brand:"Seiko", name:"Presage Cocktail", variant:"Gold", desc:"Elegant gold-tone Japanese craftsmanship", price:"₹4,38,000", badge:"new", badgeLabel:"New",
+      img:"images/seiko-gold.jpg" },
+    { id:8, brand:"Seiko", name:"Presage Cocktail", variant:"Silver", desc:"Elegant steel Japanese craftsmanship at its finest", price:"₹2,18,000", badge:"new", badgeLabel:"New",
+      img:"images/seiko-silver.jpg" },
+  ];
+
+  // ── Reviews data ──
+  const reviews = [
+    { name:"Arjun Mehta", location:"Mumbai, India", stars:5, text:"TimeCraft delivered my Omega in perfect condition. The packaging was luxurious and the watch exceeded my expectations. Highly recommend!" },
+    { name:"Priya Sharma", location:"Delhi, India", stars:5, text:"Amazing collection and super fast delivery! My Tag Heuer arrived in 2 days with a beautiful gift box. Will definitely shop again." },
+    { name:"Rahul Nair", location:"Bangalore, India", stars:4, text:"Great prices compared to other stores. The Seiko Presage I bought looks even better in person. Customer support was very helpful." },
+  ];
+
+  // Render products
+  const grid = document.getElementById('products-grid');
+  products.forEach(p => {
+    grid.innerHTML += `
+      <div class="product-card" onclick="window.location='product.html?id=${p.id}'">
+        <div class="product-img">
+          <span class="product-badge badge-${p.badge}">${p.badgeLabel}</span>
+          <img src="${p.img}" alt="${p.brand} ${p.name} ${p.variant}" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.jpg'"/>
+          <span class="product-variant">
+            <span class="variant-dot dot-${p.variant.toLowerCase()}"></span>${p.variant}
+          </span>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">${p.brand}</div>
+          <div class="product-name">${p.name} <span style="color:var(--mid);font-weight:400;font-size:13px">(${p.variant})</span></div>
+          <div class="product-desc">${p.desc}</div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">${p.price}</span>
+              ${p.oldPrice ? `<span class="product-price-old">${p.oldPrice}</span>` : ''}
+            </div>
+            <button class="btn-cart" onclick="addToCart(event, '${p.name}')">+</button>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  // Render reviews
+  const rGrid = document.getElementById('reviews-grid');
+  reviews.forEach(r => {
+    rGrid.innerHTML += `
+      <div class="review-card">
+        <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+        <p class="review-text">"${r.text}"</p>
+        <div class="review-author">
+          <div class="review-avatar">${r.name[0]}</div>
+          <div>
+            <div class="review-name">${r.name}</div>
+            <div class="review-location">${r.location}</div>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  // Cart toast
+  function addToCart(e, name) {
+    e.stopPropagation();
+    const toast = document.getElementById('toast');
+    toast.textContent = `🛒 "${name}" added to cart!`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

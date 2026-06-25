@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us – TimeCraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --gold: #c9a84c; --dark: #111111; --grey: #f7f7f7; --border: #e8e8e8; }
+    body { font-family: 'Segoe UI', sans-serif; color: var(--dark); padding-top: 110px; }
+    
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px; background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; color: var(--dark); text-decoration: none; letter-spacing: 2px; }
+    .nav-logo svg { width: 24px; height: 24px; fill: none; stroke: var(--gold); }
+    .nav-links { display: flex; gap: 30px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; font-size: 14px; }
+    .nav-links a.active { color: var(--gold); }
+
+    .about-hero { text-align: center; max-width: 80px 0; padding: 0 5%; max-width: 800px; margin: 0 auto; }
+    .about-hero h1 { font-size: 36px; margin-bottom: 20px; font-weight: 400; letter-spacing: 1px; }
+    .about-hero p { color: #666; line-height: 1.8; font-size: 16px; margin-bottom: 30px; }
+    
+    .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1100px; margin: 40px auto; padding: 0 5%; }
+    .story-card { background: var(--grey); padding: 30px; border-radius: 4px; }
+    .story-card h3 { margin-bottom: 15px; font-size: 20px; color: var(--dark); }
+    .story-card p { color: #555; line-height: 1.6; font-size: 14px; }
+
+    @media (max-width: 768px) { .story-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="25"/><line x1="50" y1="50" x2="70" y2="50"/></svg>
+      TIMECRAFT
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div></div>
+  </nav>
+
+  <section class="about-hero">
+    <h1>Our Story & Heritage</h1>
+    <p>Founded with a single target in mind: bringing haute horology masterpieces right to your screen. TimeCraft represents the collision of unmatched physical mechanics with digital accessibility, serving watch collectors across the globe.</p>
+  </section>
+
+  <div class="story-grid">
+    <div class="story-card">
+      <h3>The Academic Vision</h3>
+      <p>This application forms part of an e-commerce deployment project, mapping structural design elements against scalable user storage interfaces for dynamic portfolio utility execution.</p>
+    </div>
+    <div class="story-card">
+      <h3>True Authenticity</h3>
+      <p>Every dynamic asset represented within our store mirrors architectural parameters defined by iconic legacy manufacturers, ensuring premium experiences through modern layouts.</p>
+    </div>
+  </div>
+</body>
+</html>
