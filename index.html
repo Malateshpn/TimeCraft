@@ -50,68 +50,150 @@
     .btn-gold { background: var(--gold); color: #fff; border: 1.5px solid var(--gold); }
     .btn-gold:hover { background: #b8962e; }
 
+
     /* ── HERO ── */
-    .hero {
-      margin-top: 70px;
-      min-height: 92vh;
-      display: flex; align-items: center;
-      padding: 0 5%;
-      background: linear-gradient(135deg, #fff 55%, #f7f4ee 100%);
-      position: relative; overflow: hidden;
-    }
+    /* ================= HERO SECTION STYLES ================= */
+.hero-section {
+  width: 100%;
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  padding: 120px 20px 60px 20px; /* Uses padding instead of fixed height */
+  box-sizing: border-box;
+  overflow: hidden;
+}
 
-    .hero-bg-circle {
-      position: absolute; right: 5%; top: 50%;
-      transform: translateY(-50%);
-      width: 500px; height: 500px; border-radius: 50%;
-      background: radial-gradient(circle, #f7f0de 0%, transparent 70%);
-      z-index: 0;
-    }
+.hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 40px;
+}
 
-    .hero-content { max-width: 560px; position: relative; z-index: 1; }
-    .hero-badge {
-      display: inline-block;
-      font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--gold); border: 1px solid var(--gold);
-      padding: 5px 14px; border-radius: 20px; margin-bottom: 20px;
-    }
-    .hero-title {
-      font-size: 58px; font-weight: 800; line-height: 1.1;
-      color: var(--dark); margin-bottom: 20px;
-    }
-    .hero-title span { color: var(--gold); }
-    .hero-subtitle {
-      font-size: 16px; color: var(--mid); line-height: 1.7;
-      margin-bottom: 36px; max-width: 440px;
-    }
-    .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
-    .btn-primary {
-      padding: 14px 32px; background: var(--dark); color: #fff;
-      border: none; border-radius: 8px; font-size: 13px;
-      letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
-      cursor: pointer; text-decoration: none; transition: background 0.2s;
-    }
-    .btn-primary:hover { background: #333; }
-    .btn-secondary {
-      padding: 14px 32px; background: transparent; color: var(--dark);
-      border: 1.5px solid var(--dark); border-radius: 8px; font-size: 13px;
-      letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
-      cursor: pointer; text-decoration: none; transition: all 0.2s;
-    }
-    .btn-secondary:hover { background: var(--dark); color: #fff; }
+/* Tagline & Headers */
+.hero-tagline {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: #c5a059;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 15px;
+}
 
-    .hero-stats {
-      display: flex; gap: 2.5rem; margin-top: 50px;
-      padding-top: 30px; border-top: 1px solid var(--border);
-    }
-    .hero-stat-num { font-size: 28px; font-weight: 800; color: var(--dark); }
-    .hero-stat-label { font-size: 11px; color: var(--mid); letter-spacing: 1px; margin-top: 2px; }
+.hero-title {
+  font-size: 52px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+}
 
-    .hero-watch {
-      position: absolute; right: 8%; top: 50%;
-      transform: translateY(-50%);
-      z-index: 1;
-    }
+.hero-title .highlight {
+  color: #c5a059;
+}
+
+.hero-description {
+  font-size: 16px;
+  color: #555555;
+  line-height: 1.6;
+  max-width: 480px;
+  margin-bottom: 30px;
+}
+
+/* Action Buttons */
+.hero-actions {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.btn {
+  padding: 14px 28px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-primary {
+  background-color: #111111;
+  color: #ffffff;
+  border: 1px solid #111111;
+}
+
+.btn-primary:hover {
+  background-color: #c5a059;
+  border-color: #c5a059;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #111111;
+  border: 1px solid #cccccc;
+}
+
+.btn-secondary:hover {
+  border-color: #111111;
+}
+
+/* Stats */
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 25px;
+}
+
+.stat-item h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111111;
+  margin: 0;
+}
+
+.stat-item p {
+  font-size: 12px;
+  color: #777777;
+  margin: 4px 0 0 0;
+}
+
+/* Image */
+.hero-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-watch-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+  filter: drop-shadow(0px 15px 25px rgba(0,0,0,0.15));
+}
+
+/* ================= DESKTOP SITE ON MOBILE FIX ================= */
+@media (max-width: 992px), (max-aspect-ratio: 13/9) {
+  .hero-section {
+    padding: 100px 20px 40px 20px !important;
+    height: auto !important; /* Forces vertical compression */
+  }
+  
+  .hero-title {
+    font-size: 38px;
+  }
+  
+  .hero-watch-img {
+    max-height: 350px;
+  }
+}
+
+/* Hero section End */
+
 
     /* ── SECTION COMMONS ── */
     section { padding: 90px 5%; }
@@ -305,33 +387,53 @@
   </div>
 </nav>
 
-<!-- ── HERO ── -->
-<section class="hero">
-  <div class="hero-bg-circle"></div>
+<!-- HERO SECTION START -->
+<section class="hero-section">
+  <div class="hero-container">
+    
+    <!-- Left Column: Content -->
+    <div class="hero-content">
+      <span class="hero-tagline">✨ TIMELESS ELEGANCE & PRECISION</span>
+      <h1 class="hero-title">
+        Time Is Your <br>
+        <span class="highlight">Greatest Luxury</span>
+      </h1>
+      <p class="hero-description">
+        Discover handcrafted timepieces that blend Swiss precision with timeless elegance. 
+        Every second deserves to be worn beautifully.
+      </p>
+      
+      <div class="hero-actions">
+        <a href="#shop" class="btn btn-primary">SHOP NOW</a>
+        <a href="#collection" class="btn btn-secondary">VIEW COLLECTION</a>
+      </div>
 
-  <div class="hero-content">
-    <div class="hero-badge">✦ New Collection 2025</div>
-    <h1 class="hero-title">Time Is Your<br/><span>Greatest</span><br/>Luxury</h1>
-    <p class="hero-subtitle">Discover handcrafted timepieces that blend Swiss precision with timeless elegance. Every second deserves to be worn beautifully.</p>
-    <div class="hero-buttons">
-      <a href="shop.html" class="btn-primary">Shop Now</a>
-      <a href="#featured" class="btn-secondary">View Collection</a>
-    </div>
-    <div class="hero-stats">
-      <div>
-        <div class="hero-stat-num">500+</div>
-        <div class="hero-stat-label">Timepieces</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">12K+</div>
-        <div class="hero-stat-label">Happy Customers</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">15+</div>
-        <div class="hero-stat-label">Luxury Brands</div>
+      <!-- Quick Stats -->
+      <div class="hero-stats">
+        <div class="stat-item">
+          <h3>500+</h3>
+          <p>Timepieces</p>
+        </div>
+        <div class="stat-item">
+          <h3>12K+</h3>
+          <p>Happy Customers</p>
+        </div>
+        <div class="stat-item">
+          <h3>15+</h3>
+          <p>Luxury Brands</p>
+        </div>
       </div>
     </div>
+
+    <!-- Right Column: Hero Image -->
+    <div class="hero-image-wrapper">
+      <img src="images/hero-watch.png" alt="Luxury Timepiece Watch" class="hero-watch-img">
+    </div>
+
   </div>
+</section>
+<!-- HERO SECTION END -->
+
 
   <!-- Hero watch illustration -->
   <div class="hero-watch">
