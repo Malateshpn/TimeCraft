@@ -221,6 +221,7 @@
       .login-left { padding: 2.5rem 1.5rem; min-height: 240px; }
     }
   </style>
+  
   <!-- Load the Official Google Identity API SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -313,6 +314,9 @@
     if (!password) { showMessage('error', 'Please enter your password.'); return; }
     if (password.length < 6) { showMessage('error', 'Password must be at least 6 characters.'); return; }
 
+    // Save session state to prevent infinite redirect on index.html
+    localStorage.setItem("isLoggedIn", "true");
+
     showMessage('success', '✓ Login successful! Redirecting to TimeCraft...');
     setTimeout(() => { window.location.href = 'index.html'; }, 1500);
   }
@@ -336,6 +340,9 @@
       }).join(''));
 
       const userProfile = JSON.parse(jsonPayload);
+
+      // Save session state to prevent infinite redirect on index.html
+      localStorage.setItem("isLoggedIn", "true");
 
       showMessage('success', `✓ Access Granted! Welcome back, ${userProfile.name}.`);
       setTimeout(() => { window.location.href = 'index.html'; }, 1500);

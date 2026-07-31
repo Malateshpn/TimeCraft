@@ -6,8 +6,11 @@
   <title>TimeCraft – Precision & Elegance</title>
 
    <script>
+  // If the user is NOT logged in, redirect to login page
+  if (localStorage.getItem("isLoggedIn") !== "true") {
     window.location.href = "login.html";
-  </script>
+  }
+</script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
