@@ -10,7 +10,7 @@
     :root {
       --gold: #c9a84c;
       --dark: #111111;
-      --grey: #f7f7f7;
+      --grey: #f8f9fa;
       --mid: #666666;
       --border: #e8e8e8;
     }
@@ -22,7 +22,7 @@
       padding-top: 110px;
     }
 
-    /* ── NAVBAR (Matched to Home/Product) ── */
+    /* ── NAVBAR ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
@@ -159,11 +159,11 @@
       color: var(--mid);
     }
 
-    /* ── PRODUCT CARD GRID ── */
+    /* ── CLEAN PRODUCT CARD GRID ── */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
     }
 
     .product-card {
@@ -173,41 +173,46 @@
       cursor: pointer;
       display: flex;
       flex-direction: column;
+      border-radius: 6px;
+      overflow: hidden;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
 
     .product-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.07);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.08);
     }
 
+    /* Proper image aspect ratio matching index.html */
     .img-container {
       width: 100%;
-      height: 290px;
+      aspect-ratio: 1 / 1;
       background: var(--grey);
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 15px;
+      overflow: hidden;
     }
 
     .product-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain; /* Prevents squishing and keeps full watch visible */
       transition: transform 0.5s ease;
     }
 
     .product-card:hover .product-img {
-      transform: scale(1.06);
+      transform: scale(1.08);
     }
 
     .product-info {
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
       flex-grow: 1;
+      background: #fff;
     }
 
     .product-brand {
@@ -215,12 +220,16 @@
       text-transform: uppercase;
       color: var(--mid);
       letter-spacing: 1px;
+      font-weight: 600;
     }
 
     .product-name {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .price-container {
@@ -231,18 +240,12 @@
     }
 
     .product-price {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
       color: var(--dark);
     }
 
-    .product-price-old {
-      font-size: 13px;
-      color: var(--mid);
-      text-decoration: line-through;
-    }
-
-    /* ── EMPTY STATE Fallback ── */
+    /* ── EMPTY STATE ── */
     .empty-state {
       text-align: center;
       padding: 50px 0;
@@ -254,59 +257,47 @@
     .empty-state h3 { font-size: 18px; color: var(--dark); }
     .empty-state p { color: var(--mid); font-size: 14px; }
 
-    /* ── DESKTOP SITE MODE & MOBILE RESPONSIVE (FORCED 3 ITEMS PER ROW) ── */
-    @media (max-width: 1024px) {
+    /* ── MOBILE / SMALL SCREEN OPTIMIZATION ── */
+    @media (max-width: 768px) {
       body {
         padding-top: 85px;
       }
 
       .shop-container { 
         grid-template-columns: 1fr; 
-        gap: 15px; 
-        padding: 0 10px;
+        gap: 20px; 
+        padding: 0 4%;
       }
 
       .sidebar { 
         border-bottom: 1px solid var(--border); 
-        padding-bottom: 15px; 
+        padding-bottom: 20px; 
       }
 
       .products-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 8px !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
       }
 
       .img-container {
-        height: 120px;
+        padding: 8px;
       }
 
       .product-info {
-        padding: 8px 5px;
-        gap: 2px;
+        padding: 10px 8px;
+        gap: 4px;
       }
 
       .product-brand {
-        font-size: 8px;
-        letter-spacing: 0.5px;
+        font-size: 9px;
       }
 
       .product-name {
-        font-size: 10px;
-        line-height: 1.2;
-      }
-
-      .price-container {
-        gap: 4px;
-        margin-top: 2px;
-        flex-wrap: wrap;
+        font-size: 11px;
       }
 
       .product-price {
-        font-size: 10px;
-      }
-
-      .product-price-old {
-        font-size: 8px;
+        font-size: 11px;
       }
     }
   </style>
@@ -429,10 +420,9 @@
             </div>
             <div class="product-info">
               <span class="product-brand">${p.brand} (${p.variant})</span>
-              <h4 class="product-name">${p.brand} ${p.name}</h4>
+              <h4 class="product-name" title="${p.brand} ${p.name}">${p.brand} ${p.name}</h4>
               <div class="price-container">
                 <span class="product-price">${p.price}</span>
-                ${p.oldPrice ? `<span class="product-price-old">${p.oldPrice}</span>` : ''}
               </div>
             </div>
           </div>
