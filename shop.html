@@ -181,19 +181,6 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.07);
     }
 
-    .badge {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      background: var(--dark);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 10px;
-      letter-spacing: 0.5px;
-      z-index: 2;
-    }
-
     .img-container {
       width: 100%;
       height: 290px;
@@ -267,8 +254,8 @@
     .empty-state h3 { font-size: 18px; color: var(--dark); }
     .empty-state p { color: var(--mid); font-size: 14px; }
 
-    /* ── MOBILE RESPONSIVE (3 ITEMS PER ROW) ── */
-    @media (max-width: 768px) {
+    /* ── DESKTOP SITE MODE & MOBILE RESPONSIVE (FORCED 3 ITEMS PER ROW) ── */
+    @media (max-width: 1024px) {
       body {
         padding-top: 85px;
       }
@@ -285,16 +272,16 @@
       }
 
       .products-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 8px !important;
       }
 
       .img-container {
-        height: 110px;
+        height: 120px;
       }
 
       .product-info {
-        padding: 8px 6px;
+        padding: 8px 5px;
         gap: 2px;
       }
 
@@ -320,13 +307,6 @@
 
       .product-price-old {
         font-size: 8px;
-      }
-
-      .badge {
-        top: 6px;
-        left: 6px;
-        font-size: 8px;
-        padding: 2px 5px;
       }
     }
   </style>
@@ -404,16 +384,15 @@
   </div>
 
   <script>
-    // Exact structural values derived from your home & product file configurations
     const products = [
-      { id: 1, name: "Submariner Date", brand: "Rolex", variant: "Gold", price: "₹18,50,000", numPrice: 1850000, img: "images/rolex-gold.jpg", badge: "Hot" },
-      { id: 2, name: "Submariner Date", brand: "Rolex", variant: "Silver", price: "₹8,50,000", numPrice: 850000, img: "images/rolex-silver.jpg", badge: "Popular" },
-      { id: 3, name: "Seamaster 300M", brand: "Omega", variant: "Gold", price: "₹9,20,000", numPrice: 920000, img: "images/omega-gold.jpg", badge: "Exclusive" },
-      { id: 4, name: "Seamaster 300M", brand: "Omega", variant: "Silver", price: "₹4,20,000", numPrice: 420000, img: "images/omega-silver.jpg", badge: "New" },
-      { id: 5, name: "Carrera Calibre 5", brand: "Tag Heuer", variant: "Gold", price: "₹3,85,000", numPrice: 385000, img: "images/tagheuer-gold.jpg", badge: "Sale" },
-      { id: 6, name: "Carrera Calibre 5", brand: "Tag Heuer", variant: "Silver", price: "₹1,85,000", numPrice: 185000, img: "images/tagheuer-silver.jpg", badge: "" },
-      { id: 7, name: "Presage Cocktail", brand: "Seiko", variant: "Gold", price: "₹4,38,000", numPrice: 438000, img: "images/seiko-gold.jpg", badge: "" },
-      { id: 8, name: "Presage Cocktail", brand: "Seiko", variant: "Silver", price: "₹2,18,000", numPrice: 218000, img: "images/seiko-silver.jpg", badge: "Value" }
+      { id: 1, name: "Submariner Date", brand: "Rolex", variant: "Gold", price: "₹18,50,000", numPrice: 1850000, img: "images/rolex-gold.jpg" },
+      { id: 2, name: "Submariner Date", brand: "Rolex", variant: "Silver", price: "₹8,50,000", numPrice: 850000, img: "images/rolex-silver.jpg" },
+      { id: 3, name: "Seamaster 300M", brand: "Omega", variant: "Gold", price: "₹9,20,000", numPrice: 920000, img: "images/omega-gold.jpg" },
+      { id: 4, name: "Seamaster 300M", brand: "Omega", variant: "Silver", price: "₹4,20,000", numPrice: 420000, img: "images/omega-silver.jpg" },
+      { id: 5, name: "Carrera Calibre 5", brand: "Tag Heuer", variant: "Gold", price: "₹3,85,000", numPrice: 385000, img: "images/tagheuer-gold.jpg" },
+      { id: 6, name: "Carrera Calibre 5", brand: "Tag Heuer", variant: "Silver", price: "₹1,85,000", numPrice: 185000, img: "images/tagheuer-silver.jpg" },
+      { id: 7, name: "Presage Cocktail", brand: "Seiko", variant: "Gold", price: "₹4,38,000", numPrice: 438000, img: "images/seiko-gold.jpg" },
+      { id: 8, name: "Presage Cocktail", brand: "Seiko", variant: "Silver", price: "₹2,18,000", numPrice: 218000, img: "images/seiko-silver.jpg" }
     ];
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -445,7 +424,6 @@
       list.forEach(p => {
         grid.innerHTML += `
           <div class="product-card" onclick="window.location='product.html?id=${p.id}'">
-            ${p.badge ? `<div class="badge">${p.badge}</div>` : ''}
             <div class="img-container">
               <img src="${p.img}" alt="${p.name}" class="product-img" onerror="this.src='images/placeholder.jpg'"/>
             </div>
