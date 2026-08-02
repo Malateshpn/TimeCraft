@@ -163,7 +163,7 @@
     .products-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 25px;
+      gap: 20px;
     }
 
     .product-card {
@@ -182,21 +182,20 @@
       box-shadow: 0 12px 25px rgba(0,0,0,0.08);
     }
 
-    /* Image Container styled like index.html */
+    /* Exact Aspect Ratio & Frame to match Index page */
     .img-container {
       width: 100%;
-      height: 250px;
+      aspect-ratio: 4 / 3;
       background: var(--grey);
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative;
     }
 
     .product-img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Matches index.html filling behavior */
+      object-fit: cover;
+      object-position: center;
       transition: transform 0.5s ease;
     }
 
@@ -205,10 +204,10 @@
     }
 
     .product-info {
-      padding: 16px;
+      padding: 14px 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       flex-grow: 1;
       background: #fff;
     }
@@ -217,7 +216,7 @@
       font-size: 11px;
       text-transform: uppercase;
       color: var(--mid);
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       font-weight: 600;
     }
 
@@ -225,13 +224,16 @@
       font-size: 14px;
       font-weight: 600;
       color: var(--dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .price-container {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .product-price {
@@ -252,7 +254,7 @@
     .empty-state h3 { font-size: 18px; color: var(--dark); }
     .empty-state p { color: var(--mid); font-size: 14px; }
 
-    /* ── MOBILE OPTIMIZATION ── */
+    /* ── MOBILE RESPONSIVE ── */
     @media (max-width: 768px) {
       body {
         padding-top: 85px;
@@ -261,7 +263,7 @@
       .shop-container { 
         grid-template-columns: 1fr; 
         gap: 20px; 
-        padding: 0 4%;
+        padding: 0 3%;
       }
 
       .sidebar { 
@@ -271,29 +273,26 @@
 
       .products-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .img-container {
-        height: 130px;
+        gap: 8px;
       }
 
       .product-info {
-        padding: 10px 6px;
-        gap: 3px;
+        padding: 8px 5px;
+        gap: 2px;
       }
 
       .product-brand {
-        font-size: 9px;
+        font-size: 8px;
+        letter-spacing: 0;
       }
 
       .product-name {
-        font-size: 11px;
+        font-size: 10px;
         line-height: 1.2;
       }
 
       .product-price {
-        font-size: 11px;
+        font-size: 10px;
       }
     }
   </style>
@@ -416,7 +415,7 @@
             </div>
             <div class="product-info">
               <span class="product-brand">${p.brand} (${p.variant})</span>
-              <h4 class="product-name">${p.brand} ${p.name}</h4>
+              <h4 class="product-name" title="${p.brand} ${p.name}">${p.brand} ${p.name}</h4>
               <div class="price-container">
                 <span class="product-price">${p.price}</span>
               </div>
