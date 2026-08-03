@@ -419,10 +419,10 @@
     <li><a href="contact.html">Contact</a></li>
   </ul>
 
-  <div class="nav-actions">
-    <a href="login.html" class="btn-nav btn-outline">Login</a>
-    <a href="signup.html" class="btn-nav btn-gold">Sign Up</a>
-  </div>
+<div class="nav-actions" id="auth-actions">
+  <a href="login.html" class="btn-nav btn-outline">Login</a>
+  <a href="signup.html" class="btn-nav btn-gold">Sign Up</a>
+</div>
 </nav>
 
 <!-- HERO SECTION START -->
@@ -643,6 +643,19 @@
 <div class="toast" id="toast">🛒 Added to cart!</div>
 
 <script>
+  
+  // ── Session & Auth Check ──
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("timecraft_user"));
+    const authActions = document.getElementById("auth-actions");
+
+    if (user && authActions) {
+      authActions.innerHTML = `
+        <a href="account.html" class="btn-nav btn-outline" style="border-color: var(--gold); color: var(--gold);">Account</a>
+      `;
+    }
+  });
+
   // ── Product data (8 watches: 4 models x Gold/Silver) ──
   const products = [
     { id:1, brand:"Rolex", name:"Submariner Date", variant:"Gold", desc:"Iconic diver's watch with 18k gold case", price:"₹18,50,000", badge:"hot", badgeLabel:"Hot",
@@ -672,55 +685,61 @@
 
   // Render products
   const grid = document.getElementById('products-grid');
-  products.forEach(p => {
-    grid.innerHTML += `
-      <div class="product-card" onclick="window.location='product.html?id=${p.id}'">
-        <div class="product-img">
-          <span class="product-badge badge-${p.badge}">${p.badgeLabel}</span>
-          <img src="${p.img}" alt="${p.brand} ${p.name} ${p.variant}" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.jpg'"/>
-          <span class="product-variant">
-            <span class="variant-dot dot-${p.variant.toLowerCase()}"></span>${p.variant}
-          </span>
-        </div>
-        <div class="product-info">
-          <div class="product-brand">${p.brand}</div>
-          <div class="product-name">${p.name} <span style="color:var(--mid);font-weight:400;font-size:13px">(${p.variant})</span></div>
-          <div class="product-desc">${p.desc}</div>
-          <div class="product-footer">
-            <div>
-              <span class="product-price">${p.price}</span>
-              ${p.oldPrice ? `<span class="product-price-old">${p.oldPrice}</span>` : ''}
-            </div>
-            <button class="btn-cart" onclick="addToCart(event, '${p.name}')">+</button>
+  if (grid) {
+    products.forEach(p => {
+      grid.innerHTML += `
+        <div class="product-card" onclick="window.location='product.html?id=${p.id}'">
+          <div class="product-img">
+            <span class="product-badge badge-${p.badge}">${p.badgeLabel}</span>
+            <img src="${p.img}" alt="${p.brand} ${p.name} ${p.variant}" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.jpg'"/>
+            <span class="product-variant">
+              <span class="variant-dot dot-${p.variant.toLowerCase()}"></span>${p.variant}
+            </span>
           </div>
-        </div>
-      </div>`;
-  });
+          <div class="product-info">
+            <div class="product-brand">${p.brand}</div>
+            <div class="product-name">${p.name} <span style="color:var(--mid);font-weight:400;font-size:13px">(${p.variant})</span></div>
+            <div class="product-desc">${p.desc}</div>
+            <div class="product-footer">
+              <div>
+                <span class="product-price">${p.price}</span>
+                ${p.oldPrice ? `<span class="product-price-old">${p.oldPrice}</span>` : ''}
+              </div>
+              <button class="btn-cart" onclick="addToCart(event, '${p.name}')">+</button>
+            </div>
+          </div>
+        </div>`;
+    });
+  }
 
   // Render reviews
   const rGrid = document.getElementById('reviews-grid');
-  reviews.forEach(r => {
-    rGrid.innerHTML += `
-      <div class="review-card">
-        <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
-        <p class="review-text">"${r.text}"</p>
-        <div class="review-author">
-          <div class="review-avatar">${r.name[0]}</div>
-          <div>
-            <div class="review-name">${r.name}</div>
-            <div class="review-location">${r.location}</div>
+  if (rGrid) {
+    reviews.forEach(r => {
+      rGrid.innerHTML += `
+        <div class="review-card">
+          <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+          <p class="review-text">"${r.text}"</p>
+          <div class="review-author">
+            <div class="review-avatar">${r.name[0]}</div>
+            <div>
+              <div class="review-name">${r.name}</div>
+              <div class="review-location">${r.location}</div>
+            </div>
           </div>
-        </div>
-      </div>`;
-  });
+        </div>`;
+    });
+  }
 
   // Cart toast
   function addToCart(e, name) {
     e.stopPropagation();
     const toast = document.getElementById('toast');
-    toast.textContent = `🛒 "${name}" added to cart!`;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
+    if (toast) {
+      toast.textContent = `🛒 "${name}" added to cart!`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
   }
 
   // Smooth scroll

@@ -302,12 +302,29 @@
 </div>
 
 <script>
-  function handleSignup(e) {
-    e.preventDefault();
-    const firstName = document.getElementById('firstName').value;
-    alert(`Welcome to TimeCraft, ${firstName}! Your account setup is complete.`);
-    window.location.href = 'index.html';
-  }
+function handleSignup(e) {
+  e.preventDefault();
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  // Create full user object
+  const user = {
+    name: `${firstName} ${lastName}`,
+    email: email,
+    password: password, // In production, never store raw passwords client-side
+    provider: 'Email Registration'
+  };
+
+  // Save registered user database & set active session
+  localStorage.setItem('registered_user_' + email, JSON.stringify(user));
+  localStorage.setItem('timecraft_user', JSON.stringify(user));
+  localStorage.setItem('isLoggedIn', 'true');
+
+  alert(`Welcome to TimeCraft, ${firstName}! Your account setup is complete.`);
+  window.location.href = 'account.html';
+}
 
   // ── Modal Toggle Handler ──
   function toggleModal(modalId, isOpen) {

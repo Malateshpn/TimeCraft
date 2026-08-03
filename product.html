@@ -249,11 +249,17 @@
     <li><a href="about.html">About</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
-  <div class="nav-actions">
-    <a href="cart.html" class="cart-icon-link">🛒<span class="cart-count" id="cart-count">0</span></a>
+
+<div class="nav-actions">
+  <a href="cart.html" class="cart-icon-link">🛒<span class="cart-count" id="cart-count">0</span></a>
+  
+  <!-- Dynamic Auth Actions Container -->
+  <span id="auth-actions" style="display: inline-flex; gap: 10px;">
     <a href="login.html" class="btn-nav btn-outline">Login</a>
     <a href="signup.html" class="btn-nav btn-gold">Sign Up</a>
-  </div>
+  </span>
+</div>
+
 </nav>
 
 <div class="breadcrumb">
@@ -357,6 +363,18 @@
 <div class="toast" id="toast">🛒 Added to cart!</div>
 
 <script>
+  // ── Session & Auth Check ──
+  function checkAuthSession() {
+    const user = JSON.parse(localStorage.getItem("timecraft_user"));
+    const authActions = document.getElementById("auth-actions");
+
+    if (user && authActions) {
+      authActions.innerHTML = `
+        <a href="account.html" class="btn-nav btn-outline" style="border-color: var(--gold); color: var(--gold);">Account</a>
+      `;
+    }
+  }
+
   // ── Full product database (8 watches) ──
   const products = [
     { id:1, brand:"Rolex", name:"Submariner Date", variant:"Gold", desc:"Iconic diver's watch with 18k gold case", fullDesc:"The Rolex Submariner Date in 18k gold combines legendary diving performance with timeless luxury. Featuring a unidirectional rotatable bezel, screw-down crown, and a robust Oyster case, this timepiece is water-resistant to 300 metres. A true icon since 1953, it represents the perfect blend of form and function for the modern collector.", price:18.5, oldPrice:null, badge:"Hot", material:"18k Gold", img:"images/rolex-gold.jpg" },
@@ -437,7 +455,6 @@
           t.classList.toggle('active', i === siblings.findIndex(x => x.id === s.id));
         });
         
-        // FIXED HERE: Replaces history entry instead of writing a new one
         window.history.replaceState({}, '', `product.html?id=${s.id}`);
       };
       variantWrap.appendChild(btn);
@@ -475,7 +492,6 @@
           b.classList.toggle('active', b.textContent.trim() === item.variant);
         });
         
-        // FIXED HERE: Replaces history entry instead of writing a new one
         window.history.replaceState({}, '', `product.html?id=${item.id}`);
       };
       thumbWrap.appendChild(thumb);
@@ -541,7 +557,8 @@
   function updateCartCount() {
     const cart = getCart();
     const count = cart.reduce((sum, item) => sum + item.qty, 0);
-    document.getElementById('cart-count').textContent = count;
+    const cartCountEl = document.getElementById('cart-count');
+    if (cartCountEl) cartCountEl.textContent = count;
   }
   function addToCart() {
     const cart = getCart();
@@ -567,14 +584,19 @@
 
   function showToast(text) {
     const toast = document.getElementById('toast');
-    toast.textContent = text;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
+    if (toast) {
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
   }
 
   // ── Init ──
-  renderProduct();
-  updateCartCount();
+  document.addEventListener("DOMContentLoaded", () => {
+    checkAuthSession();
+    renderProduct();
+    updateCartCount();
+  });
 </script>
 
 </body>

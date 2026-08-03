@@ -314,12 +314,18 @@
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <div class="nav-actions">
-      <a href="login.html">Login</a>
-      <a href="cart.html" class="nav-cart">
-        🛒<span class="nav-cart-count" id="cart-count">0</span>
-      </a>
-    </div>
+
+  <div class="nav-actions">
+  <!-- Dynamic Auth Link Container -->
+  <span id="auth-link-container">
+    <a href="login.html">Login</a>
+  </span>
+
+   <a href="cart.html" class="nav-cart">
+    🛒<span class="nav-cart-count" id="cart-count">0</span>
+   </a>
+  </div>
+  
   </nav>
 
   <div class="shop-container">
@@ -381,14 +387,29 @@
       { id: 8, name: "Presage Cocktail", brand: "Seiko", variant: "Silver", price: "₹2,18,000", numPrice: 218000, img: "images/seiko-silver.jpg" }
     ];
 
-    document.addEventListener("DOMContentLoaded", () => {
-      renderProducts(products);
-      updateCartCount();
+document.addEventListener("DOMContentLoaded", () => {
+  // Check auth session and update login link to account if logged in
+  checkAuthSession();
 
-      document.getElementById("searchInput").addEventListener("input", filterAndSort);
-      document.getElementById("sortSelect").addEventListener("change", filterAndSort);
-      document.querySelectorAll(".brand-filter, .variant-filter").forEach(cb => cb.addEventListener("change", filterAndSort));
-    });
+  renderProducts(products);
+  updateCartCount();
+
+  document.getElementById("searchInput").addEventListener("input", filterAndSort);
+  document.getElementById("sortSelect").addEventListener("change", filterAndSort);
+  document.querySelectorAll(".brand-filter, .variant-filter").forEach(cb => cb.addEventListener("change", filterAndSort));
+});
+
+// Helper function to check session and update navbar
+function checkAuthSession() {
+  const user = JSON.parse(localStorage.getItem("timecraft_user"));
+  const authContainer = document.getElementById("auth-link-container");
+
+  if (user && authContainer) {
+    authContainer.innerHTML = `
+      <a href="account.html" style="font-weight: 600; color: var(--gold);">Account</a>
+    `;
+  }
+}
 
     function renderProducts(list) {
       const grid = document.getElementById("productsGrid");

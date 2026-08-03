@@ -21,7 +21,18 @@
     .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; font-size: 14px; }
     .nav-links a.active { color: var(--gold); }
 
-    .about-hero { text-align: center; max-width: 80px 0; padding: 0 5%; max-width: 800px; margin: 0 auto; }
+    .nav-actions { display: flex; align-items: center; gap: 20px; }
+    .nav-actions a { text-decoration: none; color: var(--dark); font-size: 14px; font-weight: 500; }
+    .nav-cart { position: relative; text-decoration: none; color: var(--dark); }
+    .nav-cart-count {
+      position: absolute; top: -10px; right: -12px;
+      background: var(--gold); color: #fff;
+      font-size: 11px; font-weight: bold;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .about-hero { text-align: center; padding: 0 5%; max-width: 800px; margin: 0 auto; }
     .about-hero h1 { font-size: 36px; margin-bottom: 20px; font-weight: 400; letter-spacing: 1px; }
     .about-hero p { color: #666; line-height: 1.8; font-size: 16px; margin-bottom: 30px; }
     
@@ -45,7 +56,16 @@
       <li><a href="about.html" class="active">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <div></div>
+    
+    <div class="nav-actions">
+      <!-- Dynamic Auth Link Container -->
+      <span id="auth-link-container">
+        <a href="login.html">Login</a>
+      </span>
+      <a href="cart.html" class="nav-cart">
+        🛒<span class="nav-cart-count" id="cart-count">0</span>
+      </a>
+    </div>
   </nav>
 
   <section class="about-hero">
@@ -63,5 +83,30 @@
       <p>Every dynamic asset represented within our store mirrors architectural parameters defined by iconic legacy manufacturers, ensuring premium experiences through modern layouts.</p>
     </div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      checkAuthSession();
+      updateCartCount();
+    });
+
+    function checkAuthSession() {
+      const user = JSON.parse(localStorage.getItem("timecraft_user"));
+      const authContainer = document.getElementById("auth-link-container");
+
+      if (user && authContainer) {
+        authContainer.innerHTML = `
+          <a href="account.html" style="font-weight: 600; color: var(--gold);">Account</a>
+        `;
+      }
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('timecraft_cart') || '[]');
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const cartCountEl = document.getElementById('cart-count');
+      if (cartCountEl) cartCountEl.textContent = count;
+    }
+  </script>
 </body>
 </html>

@@ -21,6 +21,17 @@
     .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; font-size: 14px; }
     .nav-links a.active { color: var(--gold); }
 
+    .nav-actions { display: flex; align-items: center; gap: 20px; }
+    .nav-actions a { text-decoration: none; color: var(--dark); font-size: 14px; font-weight: 500; }
+    .nav-cart { position: relative; text-decoration: none; color: var(--dark); }
+    .nav-cart-count {
+      position: absolute; top: -10px; right: -12px;
+      background: var(--gold); color: #fff;
+      font-size: 11px; font-weight: bold;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
     .contact-container { max-width: 600px; margin: 40px auto; padding: 0 5%; }
     .contact-container h1 { font-size: 32px; font-weight: 400; margin-bottom: 10px; text-align: center; }
     .contact-container p { color: #666; text-align: center; margin-bottom: 30px; font-size: 14px; }
@@ -47,7 +58,16 @@
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html" class="active">Contact</a></li>
     </ul>
-    <div></div>
+
+    <div class="nav-actions">
+      <!-- Dynamic Auth Link Container -->
+      <span id="auth-link-container">
+        <a href="login.html">Login</a>
+      </span>
+      <a href="cart.html" class="nav-cart">
+        🛒<span class="nav-cart-count" id="cart-count">0</span>
+      </a>
+    </div>
   </nav>
 
   <div class="contact-container">
@@ -70,5 +90,41 @@
       <button type="submit" class="btn-submit">Send Message</button>
     </form>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      checkAuthSession();
+      updateCartCount();
+      autoFillUserData();
+    });
+
+    function checkAuthSession() {
+      const user = JSON.parse(localStorage.getItem("timecraft_user"));
+      const authContainer = document.getElementById("auth-link-container");
+
+      if (user && authContainer) {
+        authContainer.innerHTML = `
+          <a href="account.html" style="font-weight: 600; color: var(--gold);">Account</a>
+        `;
+      }
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('timecraft_cart') || '[]');
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const cartCountEl = document.getElementById('cart-count');
+      if (cartCountEl) cartCountEl.textContent = count;
+    }
+
+    // Autofills user details into contact form if signed in
+    function autoFillUserData() {
+      const user = JSON.parse(localStorage.getItem("timecraft_user"));
+      if (user) {
+        const inputs = document.querySelectorAll('form input');
+        if (inputs[0] && user.name) inputs[0].value = user.name;
+        if (inputs[1] && user.email) inputs[1].value = user.email;
+      }
+    }
+  </script>
 </body>
 </html>
